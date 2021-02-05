@@ -1,0 +1,10 @@
+.Attente {
+  height: 100px;
+  background-color: brown;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  top: 40vh;
+  position: relative;
+  transform: translateY(-50%);
+}

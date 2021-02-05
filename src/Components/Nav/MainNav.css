@@ -1,0 +1,19 @@
+.Header {
+  background-color: #f19b44;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background: #f19b44;
+  box-shadow: inset 10px 10px 30px #cd843a, inset -10px -10px 30px #ffb24e;
+}
+.Header_img {
+  padding: 4px;
+  border-radius: 50%;
+  height: 40px;
+
+  background: #f19b44;
+  box-shadow: inset 2px 2px 4px #cd843a, inset -2px -2px 4px #ffb24e;
+}
