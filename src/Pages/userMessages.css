@@ -1,0 +1,38 @@
+.User__message__page p {
+  margin: 5px;
+}
+.user_conv_info {
+  display: flex;
+  justify-content: center;
+  height: 90px;
+}
+.participants {
+  margin: 5px;
+}
+.message {
+  background-color: white;
+  height: 70vh;
+  width: 90%;
+  margin: auto;
+  max-width: 400px;
+}
+.mymsg__content {
+  display: flex;
+  text-align: right;
+  justify-content: flex-end;
+}
+.mymsg__content p {
+  background-color: bisque;
+  border-radius: 320px;
+  padding: 10px;
+}
+.othermsg__content {
+  display: flex;
+  text-align: right;
+  justify-content: flex-start;
+}
+.othermsg__content p {
+  background-color: rgb(255, 173, 74);
+  border-radius: 40px;
+  padding: 10px;
+}
