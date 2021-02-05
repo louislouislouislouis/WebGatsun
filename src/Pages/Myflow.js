@@ -6,8 +6,13 @@ import { useForm } from "../Hooks/form-hook";
 import { VALIDATOR_REQUIRE } from "../util/validators";
 import Input from "../Components/Shared/Input";
 import Avatar from "../Components/Shared/Avatar";
-import edit from "../File/Icon/edit.png";
+
 import "./Myflow.css";
+
+import messageimg from "../File/Icon/message.png";
+import ticketimg from "../File/Icon/ticket.png";
+import edit from "../File/Icon/edit.png";
+import postimg from "../File/Icon/post.png";
 
 const DUMMY_USER = [
   {
@@ -220,9 +225,17 @@ const Myflow = () => {
                 </div>
               </div>
             </div>
-            <div className="myposts">SEE MY POST</div>
-            <div className="mymessage">SEE MY MESSAGES</div>
-            <div className="mydemand">SEE MY DEMAND</div>
+            <div className="other">
+              <div className="myposts">
+                <img src={postimg} alt="post" />
+              </div>
+              <div className="mymessage">
+                <img src={messageimg} alt="message" />
+              </div>
+              <div className="mydemand">
+                <img src={ticketimg} alt="postimg" />
+              </div>
+            </div>
           </div>
         </React.Fragment>
       )}

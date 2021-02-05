@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import User from "./Pages/User";
 import Myflow from "./Pages/Myflow";
+import UserMessages from "./Pages/userMessages";
 
 function App() {
   const [isLoggedin, setisLoggedin] = useState(false);
@@ -21,9 +22,13 @@ function App() {
         <Route path="/myprofile" exact={true}>
           <User />
         </Route>
+        <Route path="/:userId/message" exact={true}>
+          <UserMessages />
+        </Route>
         <Route path="/:userId" exact={true}>
           <Myflow />
         </Route>
+
         <Redirect to="/" />
       </Switch>
     </Router>
