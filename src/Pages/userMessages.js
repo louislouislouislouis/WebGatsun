@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Avatar from "../Components/Shared/Avatar";
+import Input from "../Components/Shared/Input";
+import { VALIDATOR_REQUIRE } from "../util/validators";
+import { useForm } from "../Hooks/form-hook";
 
 import "./userMessages.css";
 const DUMMY_USER = [
@@ -37,7 +40,7 @@ const DUMMY_USER = [
       "https://pbs.twimg.com/profile_images/966627563228553216/FVNkkIcj_400x400.jpg",
   },
 ];
-const DUMMY_CONV = {
+const DUMMY_CONV1 = {
   id: "conv1",
   participants: ["u1", "u2"],
   messages: [
@@ -66,12 +69,34 @@ const DUMMY_CONV = {
 };
 const UserMessages = () => {
   const userId = useParams().userId;
-  console.log(DUMMY_CONV.messages);
+  const [myconv,setConv]=useState(DUMMY_CONV1)
+  //console.log(DUMMY_CONV.messages);
+  const [MsgState, inputhandler, setformData] = useForm(
+    {
+      body :{
+        value: "d",
+        isValid: false,
+      },
+    },
+    false
+  );
+  const userUpdateSubmitHandler = (e) => {
+    e.preventDefault();
+    //console.log(authState.inputs.name.value);
+   console.log(myconv)
+    
+    myconv.messages.push({from:userId,date:new Date(), body:MsgState.inputs.body.value})
+    console.log(myconv)
+    setConv((myconv)=>(myconv))
+  };
+
+
+
   return (
     <div className="User__message__page">
       <div className="user_conv">
         <div className="user_conv_info">
-          {DUMMY_CONV.participants.map((part) => {
+          {myconv.participants.map((part) => {
             return (
               <div key={part} className="participants">
                 <Avatar
@@ -84,7 +109,7 @@ const UserMessages = () => {
           })}
         </div>
         <div className="message">
-          {DUMMY_CONV.messages.map((index) => {
+          {myconv.messages.map((index) => {
             return (
               <div
                 className={`${userId === index.from ? "my" : "other"}msg`}
@@ -101,6 +126,22 @@ const UserMessages = () => {
             );
           })}
         </div>
+        <form
+                        className="send"
+                        onSubmit={userUpdateSubmitHandler}
+                      >
+                        <Input
+                          id="body"
+                          element="input"
+                          type="text"
+                          validators={[VALIDATOR_REQUIRE()]}
+                          onInput={inputhandler}
+                          initialvalue=""
+                        />
+                        <button type="submit"  disabled={!MsgState.isValid}>
+                          Envoyer
+                        </button>
+                      </form>
       </div>
     </div>
   );

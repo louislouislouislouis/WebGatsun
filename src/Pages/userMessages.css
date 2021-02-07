@@ -15,7 +15,11 @@
   width: 90%;
   margin: auto;
   max-width: 400px;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column ;
 }
+
 .mymsg__content {
   display: flex;
   text-align: right;
@@ -35,4 +39,9 @@
   background-color: rgb(255, 173, 74);
   border-radius: 40px;
   padding: 10px;
+}
+.send {
+  background-color: white;
+  margin: auto;
+  max-width: 400px;
 }

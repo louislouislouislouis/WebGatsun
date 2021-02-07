@@ -22,7 +22,7 @@ function App() {
         <Route path="/myprofile" exact={true}>
           <User />
         </Route>
-        <Route path="/:userId/message" exact={true}>
+        <Route path="/:userId/conv/:convId" exact={true}>
           <UserMessages />
         </Route>
         <Route path="/:userId" exact={true}>
