@@ -10,14 +10,13 @@
   margin: 5px;
 }
 .message {
-  background-color: white;
   height: 70vh;
   width: 90%;
   margin: auto;
   max-width: 400px;
   overflow: scroll;
   display: flex;
-  flex-direction: column ;
+  flex-direction: column;
 }
 
 .mymsg__content {
@@ -41,7 +40,10 @@
   padding: 10px;
 }
 .send {
-  background-color: white;
-  margin: auto;
   max-width: 400px;
+  width: 90%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto 100px;
+  align-items: center;
 }

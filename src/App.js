@@ -11,6 +11,7 @@ import {
 import User from "./Pages/User";
 import Myflow from "./Pages/Myflow";
 import UserMessages from "./Pages/userMessages";
+import Conv from "./Pages/Conv";
 
 function App() {
   const [isLoggedin, setisLoggedin] = useState(false);
@@ -21,6 +22,9 @@ function App() {
       <Switch>
         <Route path="/myprofile" exact={true}>
           <User />
+        </Route>
+        <Route path="/:userId/conv" exact={true}>
+          <Conv></Conv>
         </Route>
         <Route path="/:userId/conv/:convId" exact={true}>
           <UserMessages />

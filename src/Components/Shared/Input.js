@@ -28,7 +28,13 @@ const Input = (props) => {
     isTouch: false,
     isValid: props.initialvalid || false,
   });
-
+  useEffect(() => {
+    dispatch({
+      type: "CHANGE",
+      val: "",
+      validators: props.validators,
+    });
+  }, [props.onclear]);
   const { id, onInput } = props;
   const { value, isValid } = inputState;
 

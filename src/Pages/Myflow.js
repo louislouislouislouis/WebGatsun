@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { NavLink, useParams } from "react-router-dom";
 
 import { useForm } from "../Hooks/form-hook";
 
@@ -14,44 +14,25 @@ import ticketimg from "../File/Icon/ticket.png";
 import edit from "../File/Icon/edit.png";
 import postimg from "../File/Icon/post.png";
 
-const DUMMY_USER = [
-  {
-    name: "LOMBARD",
-    firstname: "Louis",
-    username: "El_torero",
-    bio:
-      "Salut! Je m'appelle louis et je suis apprenti torrero en argenine. Je vous partage ma passion à travers ce blog",
-    post: ["p1", "p2"],
-    likes: ["Voitures", "Vie", "Pepsi"],
-    conversation: ["c1", "c2"],
-    demande: ["d1", "d2"],
-    id: "u1",
-    email: "test@test.com",
-    role: "sudo",
-    img:
-      "https://www.leparisien.fr/resizer/8myHvElJVa1G1DpaHysQfhZZXzA=/932x582/cloudfront-eu-central-1.images.arcpublishing.com/leparisien/ZPHEFWAHZJXSPZPQNXN4OZJ76U.jpg",
-  },
-  {
-    name: "martin",
-    firstname: "Matin",
-    username: "Ekip",
-    bio:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque quis dolore cum placeat earum officiis molestiae praesentium consequatur aliquid suscipit tenetur, asperiores vitae pariatur aspernatur modi nemo ipsum culpa porro!",
-    post: ["p3", "p4"],
-    likes: ["Chat", "Chien", "Poisson"],
-    conversation: ["c1", "c3"],
-    demande: ["d9", "d4"],
-    id: "u2",
-    email: "testddddddddd2@test.com",
-    role: "u",
-    img:
-      "https://pbs.twimg.com/profile_images/966627563228553216/FVNkkIcj_400x400.jpg",
-  },
-];
-
 const Myflow = () => {
   const userId = useParams().userId;
-  const user = DUMMY_USER.find((user) => userId === user.id);
+
+  const [user, setrUser] = useState();
+  useEffect(() => {
+    const sendReq = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/user/${userId}`
+        );
+
+        const responseData = await response.json();
+        console.log(responseData);
+        setrUser(responseData);
+      } catch (err) {}
+    };
+    sendReq();
+  }, []);
+
   const [changeMode, setChangeMode] = useState(false);
   const [changeMode2, setChangeMode2] = useState(false);
   const [authState, inputhandler, setformData] = useForm(
@@ -227,13 +208,19 @@ const Myflow = () => {
             </div>
             <div className="other">
               <div className="myposts">
-                <img src={postimg} alt="post" />
+                <NavLink to={`/${userId}/post`}>
+                  <img src={postimg} alt="post" />
+                </NavLink>
               </div>
               <div className="mymessage">
-                <img src={messageimg} alt="message" />
+                <NavLink to={`/${userId}/conv`}>
+                  <img src={messageimg} alt="message" />
+                </NavLink>
               </div>
               <div className="mydemand">
-                <img src={ticketimg} alt="postimg" />
+                <NavLink to={`/${userId}/demand`}>
+                  <img src={ticketimg} alt="postimg" />
+                </NavLink>
               </div>
             </div>
           </div>
