@@ -12,6 +12,7 @@ import "./userMessages.css";
 let interval;
 const UserMessages = () => {
   const msgRef = useRef();
+  
 
   const userId = useParams().userId;
 
@@ -20,6 +21,62 @@ const UserMessages = () => {
   const [myconv, setrconv] = useState();
   const [getmsg, setgetmsg] = useState(false);
   const convId = useParams().convId;
+
+  let source,eventSource;
+
+  useEffect(() => {
+    source=new EventSource(`http://localhost:5000/stream/hello`);
+    eventSource=new EventSource(`http://localhost:5000/stream/live/${convId}/${userId}`);
+    /* Ou via l'ajout d'un gestionnaire d'événement "open" */
+    source.addEventListener('open', () => console.log('connected'));
+    
+    source.addEventListener('CustomEvent', (event) => {
+      console.log(event.data)
+      lasendReq()
+    });
+    eventSource.addEventListener('count', event => {
+      console.log(`Il y a actuellement ${event.data} personne(s) connectée(s) sur le live`);
+    });
+    eventSource.addEventListener('message', event => {
+      console.log(event);
+      lasendReq()
+    });
+    
+    /* Soit via l'utilisation de la méthode "onerror" */
+
+    /* Ou via l'ajout d'un gestionnaire d'événement "error" */
+    source.addEventListener('error', event => {
+      console.log(event);
+      if (source.readyState === EventSource.CLOSED) {
+      /* Traitement en cas de perte de connexion définitive avec le serveur */
+      console.log("aiaiaia");
+      }
+      if (source.readyState === EventSource.CONNECTING) {
+      /* En cas de perte de connexion temporaire avec le serveur */
+      console.log("ouloulou");
+      }
+    });
+    source.onmessage = event => {
+      console.log(event.data);
+    };
+    /* Récupération des messages de type "alert" */
+    source.addEventListener('alert', event => {
+      console.log('Alert message', event.data);
+    });
+
+    /* Récupération des messages de type "comment" */
+    source.addEventListener('comment', event => {
+      console.log('Comment message', event.data);
+    });
+
+    /* Récupération des messages de type "like" */
+    source.addEventListener('like', event => {
+      console.log('Like message', event.data);
+    });
+    source.addEventListener('message', event => {
+      console.log('Message', event.data);
+    });
+  }, []);
 
   const [MsgState, inputhandler, setformData] = useForm(
     {
@@ -96,13 +153,15 @@ const UserMessages = () => {
       msgRef.current.scrollTop = msgRef.current.scrollHeight;
     }
   }, [getmsg]);
-  useEffect(() => {
+
+  
+  /* useEffect(() => {
     console.log("ineee");
     interval = setInterval(() => {
       lasendReq();
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, []); */
 
   //let myconv = DUMMY_CONV.find((conv) => conv.id === convId);
 
@@ -130,9 +189,9 @@ const UserMessages = () => {
       }
     );
     lasendReq();
-    interval = setInterval(() => {
+    /* interval = setInterval(() => {
       lasendReq();
-    }, 1000);
+    }, 1000);  */
     console.log(MsgState);
     setformData(
       {
@@ -153,7 +212,9 @@ const UserMessages = () => {
 
     //setConv((myconv) => myconv);
   };
-
+ 
+   
+  
   return (
     <div className="User__message__page">
       {myconv && (
