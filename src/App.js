@@ -12,16 +12,32 @@ import User from "./Pages/User";
 import Myflow from "./Pages/Myflow";
 import UserMessages from "./Pages/userMessages";
 import Conv from "./Pages/Conv";
+import Auth from "./Pages/Auth"
+import { useAuth } from "./Hooks/auth-hooks";
+import { AuthContext } from "./context/auth-context";
 
 function App() {
+  const { token, login, logout, UserId } = useAuth();
   const [isLoggedin, setisLoggedin] = useState(false);
   return (
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: !!token,
+        token: token,
+        login: login,
+        logout: logout,
+        userId: UserId,
+      }}
+    >
     <Router>
       <MainNav />
       {isLoggedin && <Waitings />}
       <Switch>
         <Route path="/myprofile" exact={true}>
           <User />
+        </Route>
+        <Route path="/auth" exact={true}>
+          <Auth />
         </Route>
         <Route path="/:userId/conv" exact={true}>
           <Conv></Conv>
@@ -32,10 +48,10 @@ function App() {
         <Route path="/:userId" exact={true}>
           <Myflow />
         </Route>
-
         <Redirect to="/" />
       </Switch>
     </Router>
+    </AuthContext.Provider>
   );
 }
 
