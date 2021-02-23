@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../../context/auth-context";
+
+import { AuthContext } from "../../../Context/auth-context";
 import Avatar from "../../../Components/Shared/Avatar";
 
 const Users = () => {
@@ -24,7 +24,7 @@ const Users = () => {
   const handlecreateconv = async (e) => {
     console.log(e);
     try {
-      const response = await fetch(`http://localhost:5000/api/conv`, {
+      await fetch(`http://localhost:5000/api/conv`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +42,10 @@ const Users = () => {
       {allusers &&
         allusers.map((usr) => {
           return (
-            <React.Fragment>
-              <div onClick={() => handlecreateconv(usr.id)}>
-                <div className="name">{usr.id}</div>
-                <Avatar image={usr.img} alt={usr.id} width="100px"></Avatar>
-              </div>
-            </React.Fragment>
+            <div key={usr.id} onClick={() => handlecreateconv(usr.id)}>
+              <div className="name">{usr.id}</div>
+              <Avatar image={usr.img} alt={usr.id} width="100px"></Avatar>
+            </div>
           );
         })}
       <div>Pas de ll</div>

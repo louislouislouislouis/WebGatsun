@@ -32,7 +32,7 @@ const Profil = () => {
       } catch (err) {}
     };
     sendReq();
-  }, []);
+  }, [userId]);
 
   const [changeMode, setChangeMode] = useState(false);
   const [changeMode2, setChangeMode2] = useState(false);

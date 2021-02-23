@@ -7,11 +7,11 @@ import {
 } from "react-router-dom";
 
 import { useAuth } from "./Hooks/auth-hooks";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "./Context/auth-context";
 
 import MainNav from "./Components/Nav/MainNav";
 import Home from "./Pages/Home/Home";
-import Users from "./Pages/User/Public/AllUsers";
+import Allusers from "./Pages/User/Public/AllUsers";
 import Profil from "./Pages/User/Public/Profil";
 import UserMessages from "./Pages/User/Private/userMessages";
 import Conv from "./Pages/User/Private/Conv";
@@ -30,7 +30,7 @@ function App() {
           <Home />
         </Route>
         <Route path="/user/allusers" exact={true}>
-          <Users />
+          <Allusers />
         </Route>
         <Route path="/:userId/conv/:convId" exact={true}>
           <UserMessages />
@@ -61,7 +61,7 @@ function App() {
           <NoRight />
         </Route>
         <Route path="/user/allusers" exact={true}>
-          <Users />
+          <Allusers />
         </Route>
         <Route path="/:userId/profil" exact={true}>
           <Profil />

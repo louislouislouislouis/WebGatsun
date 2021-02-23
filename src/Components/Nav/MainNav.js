@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../context/auth-context";
+import { AuthContext } from "../../Context/auth-context";
 import "./MainNav.css";
 import home from "../../File/image/home.png";
 import user from "../../File/image/user.png";

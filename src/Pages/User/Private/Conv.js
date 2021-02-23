@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
-import OneConv from "../../../Components/Shared/OneConv";
+import OneConv from "../../../Components/Conv/OneConv";
 
 import "./Conv.css";
 const Conv = () => {
@@ -24,11 +24,8 @@ const Conv = () => {
       } catch (err) {}
     };
     sendReq();
-  }, []);
-  const test = () => {
-    console.log(userimg);
-    console.log(myconv);
-  };
+  }, [userId]);
+
   const getimage = async (convs) => {
     let arrayimg = [];
     for (const conv of convs) {
@@ -58,20 +55,21 @@ const Conv = () => {
             let lol = userimg.find((convp) => convp.conv === conv.id);
             if (lol) {
               return (
-                <NavLink to={`/${userId}/conv/${conv.id}`}>
+                <NavLink
+                  to={`/${userId}/conv/${conv.id}`}
+                  key={userId + conv.id}
+                >
                   <OneConv
                     /* with={conv.participants.filter((part) => part !== userId)} */
                     with={lol.partimg}
                   />
                 </NavLink>
               );
+            } else {
+              return <div key={conv.id} />;
             }
           })}
-          <NavLink to={`/user/allusers`}>
-            {myconv.length === 0
-              ? "You don't have any conversation yet. Start one?"
-              : "Start a new conversation"}
-          </NavLink>
+          <NavLink to={`/user/allusers`}>"Start a new conversation"</NavLink>
         </div>
       )}
       {myconv && myconv.length === 0 && (

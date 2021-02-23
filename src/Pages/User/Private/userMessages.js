@@ -21,9 +21,40 @@ const UserMessages = () => {
   const [getmsg, setgetmsg] = useState(false);
   const convId = useParams().convId;
 
-  let source, eventSource;
+  //console.log(eventSource);
+  const [MsgState, inputhandler, setformData] = useForm(
+    {
+      body: {
+        value: "",
+        isValid: false,
+      },
+    },
+    false
+  );
 
+  const lasendReq = useCallback(() => {
+    console.log("in");
+    const vsendReq = async () => {
+      try {
+        console.log("in");
+        const response = await fetch(
+          `http://localhost:5000/api/conv/${convId}`
+        );
+
+        const responseData = await response.json();
+        //console.log(responseData.participants);
+
+        setrconv(responseData);
+        setTimeout(
+          () => (msgRef.current.scrollTop = msgRef.current.scrollHeight + 200),
+          50
+        );
+      } catch (err) {}
+    };
+    vsendReq();
+  }, [convId]);
   useEffect(() => {
+    let source, eventSource;
     source = new EventSource(`http://localhost:5000/stream/hello`);
     console.log("la fonction rerender");
     eventSource = new EventSource(
@@ -81,40 +112,7 @@ const UserMessages = () => {
     source.addEventListener("message", (event) => {
       console.log("Message", event.data);
     });
-  }, []);
-  //console.log(eventSource);
-  const [MsgState, inputhandler, setformData] = useForm(
-    {
-      body: {
-        value: "",
-        isValid: false,
-      },
-    },
-    false
-  );
-
-  const lasendReq = useCallback(() => {
-    const vsendReq = async () => {
-      try {
-        console.log("in");
-        const response = await fetch(
-          `http://localhost:5000/api/conv/${convId}`
-        );
-
-        const responseData = await response.json();
-        //console.log(responseData.participants);
-        if (responseData !== myconv) {
-          setrconv(responseData);
-          setTimeout(
-            () =>
-              (msgRef.current.scrollTop = msgRef.current.scrollHeight + 200),
-            50
-          );
-        }
-      } catch (err) {}
-    };
-    vsendReq();
-  }, []);
+  }, [convId, lasendReq, userId]);
   useEffect(() => {
     const sendReq = async () => {
       console.log("err");
@@ -146,20 +144,19 @@ const UserMessages = () => {
         const img2 = responseData3.img;
         setrUser((old) => [...old, img2]);
         console.log(img);
-        if (getmsg === false) {
-          setgetmsg(true);
-        }
+
+        setgetmsg(true);
       } catch (err) {}
     };
     sendReq();
-  }, []);
+  }, [convId]);
 
   useEffect(() => {
     console.log("acha,ge");
     if (myconv) {
       msgRef.current.scrollTop = msgRef.current.scrollHeight;
     }
-  }, [getmsg]);
+  }, [getmsg, myconv]);
 
   /* useEffect(() => {
     console.log("ineee");
@@ -173,8 +170,8 @@ const UserMessages = () => {
 
   //console.log(DUMMY_CONV.messages);
   const handleconection = async () => {
-    console.log(eventSource);
-    const response = await fetch(`http://localhost:5000/stream/`, {
+    //console.log(eventSource);
+    await fetch(`http://localhost:5000/stream/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -185,6 +182,7 @@ const UserMessages = () => {
       }),
     });
   };
+
   const [onclear, setonclear] = useState(false);
   //console.log(participipants);
   const userUpdateSubmitHandler = async (e) => {
@@ -194,18 +192,15 @@ const UserMessages = () => {
     //console.log(authState.inputs.name.value);
     console.log(myconv);
 
-    const response = await fetch(
-      `http://localhost:5000/api/conv/${convId}/${userId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          value: MsgState.inputs.body.value,
-        }),
-      }
-    );
+    await fetch(`http://localhost:5000/api/conv/${convId}/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        value: MsgState.inputs.body.value,
+      }),
+    });
     lasendReq();
     /* interval = setInterval(() => {
       lasendReq();
@@ -282,7 +277,7 @@ const UserMessages = () => {
         </div>
       )}
       <NavLink onClick={handleconection} to={`/${userId}/conv`}>
-        <img src={backimg}></img>
+        <img src={backimg} alt="retour"></img>
       </NavLink>
     </div>
   );

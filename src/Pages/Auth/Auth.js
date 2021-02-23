@@ -5,7 +5,7 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../util/validators";
-import { AuthContext } from "../../context/auth-context";
+import { AuthContext } from "../../Context/auth-context";
 
 import { useForm } from "../../Hooks/form-hook";
 const Auth = () => {
