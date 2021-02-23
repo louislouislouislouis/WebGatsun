@@ -1,24 +1,76 @@
-import React, { useState } from "react";
-
-import MainNav from "./Components/Nav/MainNav";
-import Waitings from "./Components/Shared/Waitings";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   Redirect,
   Switch,
 } from "react-router-dom";
-import User from "./Pages/User";
-import Myflow from "./Pages/Myflow";
-import UserMessages from "./Pages/userMessages";
-import Conv from "./Pages/Conv";
-import Auth from "./Pages/Auth"
+
 import { useAuth } from "./Hooks/auth-hooks";
 import { AuthContext } from "./context/auth-context";
 
+import MainNav from "./Components/Nav/MainNav";
+import Home from "./Pages/Home/Home";
+import Users from "./Pages/User/Public/AllUsers";
+import Profil from "./Pages/User/Public/Profil";
+import UserMessages from "./Pages/User/Private/userMessages";
+import Conv from "./Pages/User/Private/Conv";
+import Auth from "./Pages/Auth/Auth";
+import NoRight from "./Pages/User/Public/NoRight";
+
+//import Waitings from "./Components/Shared/Waitings";
+
 function App() {
   const { token, login, logout, UserId } = useAuth();
-  const [isLoggedin, setisLoggedin] = useState(false);
+  let routes;
+  if (token) {
+    routes = (
+      <Switch>
+        <Route path="/" exact={true}>
+          <Home />
+        </Route>
+        <Route path="/user/allusers" exact={true}>
+          <Users />
+        </Route>
+        <Route path="/:userId/conv/:convId" exact={true}>
+          <UserMessages />
+        </Route>
+        <Route path="/:userId/conv" exact={true}>
+          <Conv />
+        </Route>
+        <Route path="/:userId/profil" exact={true}>
+          <Profil />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    );
+  } else {
+    console.log("wr");
+    routes = (
+      <Switch>
+        <Route path="/" exact={true}>
+          <Home />
+        </Route>
+        <Route path="/auth" exact={true}>
+          <Auth />
+        </Route>
+        <Route path="/:userId/conv/:convId" exact={true}>
+          <NoRight />
+        </Route>
+        <Route path="/:userId/conv" exact={true}>
+          <NoRight />
+        </Route>
+        <Route path="/user/allusers" exact={true}>
+          <Users />
+        </Route>
+        <Route path="/:userId/profil" exact={true}>
+          <Profil />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    );
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -29,28 +81,10 @@ function App() {
         userId: UserId,
       }}
     >
-    <Router>
-      <MainNav />
-      {isLoggedin && <Waitings />}
-      <Switch>
-        <Route path="/myprofile" exact={true}>
-          <User />
-        </Route>
-        <Route path="/auth" exact={true}>
-          <Auth />
-        </Route>
-        <Route path="/:userId/conv" exact={true}>
-          <Conv></Conv>
-        </Route>
-        <Route path="/:userId/conv/:convId" exact={true}>
-          <UserMessages />
-        </Route>
-        <Route path="/:userId" exact={true}>
-          <Myflow />
-        </Route>
-        <Redirect to="/" />
-      </Switch>
-    </Router>
+      <Router>
+        <MainNav />
+        {routes}
+      </Router>
     </AuthContext.Provider>
   );
 }
