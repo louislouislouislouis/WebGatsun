@@ -67,7 +67,7 @@ const Auth = () => {
     console.log(isLoginMode);
     if (isLoginMode) {
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/log`, {
+        const response = await fetch(`http://localhost:5000/api/user/log`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +87,7 @@ const Auth = () => {
     } else {
       console.log("hehe");
       try {
-        const response = await fetch(`http://localhost:5000/api/auth/sgnp`, {
+        const response = await fetch(`http://localhost:5000/api/user/sgnp`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

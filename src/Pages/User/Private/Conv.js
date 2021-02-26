@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
 import OneConv from "../../../Components/Conv/OneConv";
+import { useHttpClient } from "../../../Hooks/http-hook";
+import { AuthContext } from "../../../Context/auth-context";
 
 import "./Conv.css";
 const Conv = () => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const auth = useContext(AuthContext);
+
   const userId = useParams().userId;
+
   const [myconv, setmyconv] = useState();
   const [userimg, setuserimg] = useState([]);
-
   useEffect(() => {
     const sendReq = async () => {
       try {
-        const convsresponse = await fetch(
-          `http://localhost:5000/api/conv/w/${userId}`
+        const convsresponse = await sendRequest(
+          `http://localhost:5000/api/conv/fbuser/${userId}`,
+          "GET",
+          null,
+          { Authorization: "Bearer " + auth.token }
         );
-        const listofconvs = await convsresponse.json();
-        console.log(listofconvs);
-        if (listofconvs) {
-          setmyconv(listofconvs);
+
+        if (convsresponse) {
+          setmyconv(convsresponse);
         }
-        getimage(listofconvs);
+        getimage(convsresponse);
       } catch (err) {}
     };
     sendReq();
-  }, [userId]);
+  }, [userId, auth.token, sendRequest]);
 
   const getimage = async (convs) => {
     let arrayimg = [];

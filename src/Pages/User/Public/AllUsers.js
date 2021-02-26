@@ -1,42 +1,46 @@
 import React, { useEffect, useState, useContext } from "react";
 
+import { useHttpClient } from "../../../Hooks/http-hook";
 import { AuthContext } from "../../../Context/auth-context";
 import Avatar from "../../../Components/Shared/Avatar";
 
 const Users = () => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [allusers, setallusers] = useState();
   const auth = useContext(AuthContext);
-  console.log(auth);
   useEffect(() => {
     const sendReq = async () => {
       try {
-        const convsresponse = await fetch(
+        const convsresponse = await sendRequest(
           `http://localhost:5000/api/user/alluser`
         );
-        const convs = await convsresponse.json();
-        if (convs) {
-          setallusers(convs);
+        if (convsresponse) {
+          setallusers(convsresponse);
         }
       } catch (err) {}
     };
     sendReq();
-  }, []);
+  }, [sendRequest]);
   const handlecreateconv = async (e) => {
-    console.log(e);
+    const formData = new FormData();
+    formData.append("part1", auth.userId);
+    formData.append("part2", e);
+
     try {
-      await fetch(`http://localhost:5000/api/conv`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      await sendRequest(
+        `http://localhost:5000/api/conv`,
+        "POST",
+        JSON.stringify({
           part1: auth.userId,
           part2: e,
         }),
-      });
+        {
+          Authorization: "Bearer " + auth.token,
+          "Content-Type": "application/json",
+        }
+      );
     } catch (err) {}
   };
-  console.log(allusers);
   return (
     <React.Fragment>
       {allusers &&

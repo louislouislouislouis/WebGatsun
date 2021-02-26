@@ -45,7 +45,6 @@ function App() {
       </Switch>
     );
   } else {
-    console.log("wr");
     routes = (
       <Switch>
         <Route path="/" exact={true}>
