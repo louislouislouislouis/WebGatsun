@@ -23,6 +23,7 @@ import NoRight from "./Pages/User/Public/NoRight";
 function App() {
   const { token, login, logout, UserId } = useAuth();
   let routes;
+
   if (token) {
     routes = (
       <Switch>

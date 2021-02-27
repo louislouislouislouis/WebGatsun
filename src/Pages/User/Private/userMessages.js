@@ -24,9 +24,18 @@ const UserMessages = () => {
   const msgRef = useRef();
   const auth = useContext(AuthContext);
   const userId = useParams().userId;
-
   const [myconv, setrconv] = useState();
   const convId = useParams().convId;
+  const evtSrclive = useRef(null);
+
+  //CREER LA SOURCEEVENT SHARABLE
+  const listenEvt = useCallback(() => {
+    if (!evtSrclive.current) {
+      evtSrclive.current = new EventSource(
+        `http://localhost:5000/api/live/${userId}`
+      );
+    }
+  }, [userId]);
 
   const [MsgState, inputhandler, setformData] = useForm(
     {
@@ -53,7 +62,32 @@ const UserMessages = () => {
       } catch (err) {}
     };
     vsendReq();
+
+    msgRef.current.scrollTop = msgRef.current.scrollHeight + 100;
   }, [convId, sendRequest, auth.token]);
+
+  const sendlivreq = useCallback(() => {
+    const vsendReq = async () => {
+      try {
+        const response = await sendRequest(
+          `http://localhost:5000/api/live/${convId}/newmsg`
+        );
+      } catch (err) {}
+    };
+    vsendReq();
+  }, [convId, sendRequest]);
+
+  //SE CONNECTER AU LIVE ET ETRE A L'AFFUT DES MESSAGE
+  useEffect(() => {
+    listenEvt();
+    evtSrclive.current.addEventListener("newmsg", (event) => {
+      console.log("Message", event.data);
+      if (event.data === convId) {
+        lasendReq();
+      }
+    });
+    return () => evtSrclive.current.close();
+  }, [convId, lasendReq, listenEvt]);
 
   //RECUPERER CONV AU CHARGMEENT DE LA PAGE
 
@@ -98,6 +132,7 @@ const UserMessages = () => {
       }
     );
     lasendReq();
+    sendlivreq();
     setformData(
       {
         body: {
@@ -110,7 +145,6 @@ const UserMessages = () => {
     setonclear(true);
     setTimeout(() => setonclear(false), 500);
   };
-
   return (
     <div className="User__message__page">
       {myconv && (
