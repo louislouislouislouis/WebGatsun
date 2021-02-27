@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
 import { useForm } from "../../../Hooks/form-hook";
-
+import { useHttpClient } from "../../../Hooks/http-hook";
+import { AuthContext } from "../../../Context/auth-context";
 import { VALIDATOR_REQUIRE } from "../../../util/validators";
 
 import Input from "../../../Components/Shared/Input";
 import Avatar from "../../../Components/Shared/Avatar";
-
+import Waiting from "../../../Components/Shared/Waitings";
 import "./Myflow.css";
 
 import messageimg from "../../../File/Icon/message.png";
@@ -17,86 +18,103 @@ import postimg from "../../../File/Icon/post.png";
 
 const Profil = () => {
   const userId = useParams().userId;
+  const [user, setUser] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const auth = useContext(AuthContext);
 
-  const [user, setrUser] = useState();
+  //GET INFO USER
   useEffect(() => {
     const sendReq = async () => {
       try {
-        const response = await fetch(
+        const response = await sendRequest(
           `http://localhost:5000/api/user/${userId}`
         );
-
-        const responseData = await response.json();
-        console.log(responseData);
-        setrUser(responseData);
+        setUser(response);
       } catch (err) {}
     };
     sendReq();
-  }, [userId]);
+  }, [userId, sendRequest]);
 
-  const [changeMode, setChangeMode] = useState(false);
-  const [changeMode2, setChangeMode2] = useState(false);
-  const [authState, inputhandler, setformData] = useForm(
+  const [changeModeEditName, setchangeModeEditName] = useState(false);
+  const [changeModeEditFirstName, setchangeModeEditFistName] = useState(false);
+
+  const [authStateName, inputhandlerName, setformDataName] = useForm(
     {
       name: {
         value: user ? user.name : "",
-        isValid: false,
+        isValid: true,
       },
     },
     true
   );
-  const [authState2, inputhandler2, setformData2] = useForm(
+  const [
+    authStateFirstName,
+    inputhandlerFirstName,
+    setformDataFisrtName,
+  ] = useForm(
     {
       firstname: {
         value: user ? user.firstname : "",
-        isValid: false,
+        isValid: true,
       },
     },
     true
   );
-  const ChangeModeHandler1 = () => {
-    setformData(
+
+  // SHOW/HIDE MODIF NAME
+
+  const ChangeNameHandler = () => {
+    console.log(user.name);
+    console.log(authStateName);
+    console.log(authStateFirstName);
+    setformDataName(
       {
         name: {
-          value: authState.inputs.name.value,
-          isValid: true,
+          value: user.name,
+          isValid: false,
         },
       },
-      true
+      false
     );
-    setChangeMode((prvMode) => !prvMode);
+    setchangeModeEditName((prvMode) => !prvMode);
   };
-  const ChangeModeHandler2 = () => {
-    setformData2(
+
+  // SHOW/HIDE MODIF FIRSTNAME
+
+  const ChangeFirstNameHandler = () => {
+    setformDataFisrtName(
       {
         firstname: {
-          value: authState2.inputs.firstname.value,
-          isValid: true,
+          value: authStateFirstName.inputs.firstname.value,
+          isValid: false,
         },
       },
-      true
+      false
     );
-    setChangeMode2((prvMode) => !prvMode);
+    setchangeModeEditFistName((prvMode) => !prvMode);
   };
+
+  // SEND MODIFNAME
+
   const userUpdateSubmitHandler = (e) => {
     e.preventDefault();
-    //console.log(authState.inputs.name.value);
-    user.name = authState.inputs.name.value;
-    console.log(user.name);
-    console.log(user.firstname);
-    setChangeMode((prvMode) => !prvMode);
+    user.name = authStateName.inputs.name.value;
+    //A Faire en ajoutant un API Pour ca
+    setchangeModeEditName((prvMode) => !prvMode);
   };
+
+  // SEND MODIFFIRSTNAME
+
   const userUpdateSubmitHandler2 = (e) => {
     e.preventDefault();
-    //console.log(authState);
-    //console.log(authState2);
-    user.firstname = authState2.inputs.name.value;
-    console.log(user.name);
-    console.log(user.firstname);
-    setChangeMode2((prvMode) => !prvMode);
+    user.firstname = authStateFirstName.inputs.firstname.value;
+    //A Faire en ajoutant un API Pour ca
+    setchangeModeEditFistName((prvMode) => !prvMode);
   };
+
   return (
     <React.Fragment>
+      {isLoading && <Waiting />}
       {user && (
         <React.Fragment>
           <div className="Page_User">
@@ -108,38 +126,43 @@ const Profil = () => {
                 <div
                   className="user__name"
                   style={{
-                    gridTemplateColumns: `${changeMode ? "70px auto" : ""}`,
+                    gridTemplateColumns: `${
+                      changeModeEditName ? "70px auto" : ""
+                    }`,
                   }}
                 >
                   <p>Nom :</p>
-                  {!changeMode && (
+                  {!changeModeEditName && (
                     <React.Fragment>
                       <p>{user.name}</p>
-                      <img
-                        src={edit}
-                        className="icon"
-                        alt="edit"
-                        style={{ opacity: 0.5 }}
-                        onClick={ChangeModeHandler1}
-                      />
+                      {auth.userId === userId && (
+                        <img
+                          src={edit}
+                          className="icon"
+                          alt="edit"
+                          style={{ opacity: 0.5 }}
+                          onClick={ChangeNameHandler}
+                        />
+                      )}
                     </React.Fragment>
                   )}
-                  {changeMode && (
+                  {changeModeEditName && (
                     <React.Fragment>
                       <form
                         className="changeparam"
                         onSubmit={userUpdateSubmitHandler}
+                        value={"df"}
                       >
                         <Input
                           id="name"
                           element="input"
                           type="text"
                           validators={[VALIDATOR_REQUIRE()]}
-                          onInput={inputhandler}
+                          onInput={inputhandlerName}
                           initialvalue={user.name}
-                          initialvalid
+                          initialvalid={true}
                         />
-                        <button type="submit" disabled={!authState.isValid}>
+                        <button type="submit" disabled={!authStateName.isValid}>
                           Change
                         </button>
                       </form>
@@ -149,38 +172,45 @@ const Profil = () => {
                 <div
                   className="user__name"
                   style={{
-                    gridTemplateColumns: `${changeMode2 ? "70px auto" : ""}`,
+                    gridTemplateColumns: `${
+                      changeModeEditFirstName ? "70px auto" : ""
+                    }`,
                   }}
                 >
                   <p>Prenom :</p>
-                  {!changeMode2 && (
+                  {!changeModeEditFirstName && (
                     <React.Fragment>
                       <p>{user.firstname}</p>
-                      <img
-                        src={edit}
-                        className="icon"
-                        alt="edit"
-                        style={{ opacity: 0.5 }}
-                        onClick={ChangeModeHandler2}
-                      />
+                      {auth.userId === userId && (
+                        <img
+                          src={edit}
+                          className="icon"
+                          alt="edit"
+                          style={{ opacity: 0.5 }}
+                          onClick={ChangeFirstNameHandler}
+                        />
+                      )}
                     </React.Fragment>
                   )}
-                  {changeMode2 && (
+                  {changeModeEditFirstName && (
                     <React.Fragment>
                       <form
                         className="changeparam"
                         onSubmit={userUpdateSubmitHandler2}
                       >
                         <Input
-                          id="name"
+                          id="firstname"
                           element="input"
                           type="text"
                           validators={[VALIDATOR_REQUIRE()]}
-                          onInput={inputhandler2}
+                          onInput={inputhandlerFirstName}
                           initialvalue={user.firstname}
-                          initialvalid
+                          initialvalid={true}
                         />
-                        <button type="submit" disabled={!authState2.isValid}>
+                        <button
+                          type="submit"
+                          disabled={!authStateFirstName.isValid}
+                        >
                           Change
                         </button>
                       </form>
@@ -227,7 +257,6 @@ const Profil = () => {
           </div>
         </React.Fragment>
       )}
-
       {!user && <div className="marhceap">Wainting à faire</div>}
     </React.Fragment>
   );

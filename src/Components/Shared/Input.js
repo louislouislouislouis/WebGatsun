@@ -32,10 +32,12 @@ const Input = (props) => {
     isValid: props.initialvalid || false,
   });
   useEffect(() => {
-    dispatch({
-      type: "CHANGE",
-      val: "",
-    });
+    if (props.onclear) {
+      dispatch({
+        type: "CHANGE",
+        val: "",
+      });
+    }
   }, [props.onclear]);
   const { id, onInput } = props;
   const { value, isValid } = inputState;
