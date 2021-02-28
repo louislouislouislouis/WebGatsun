@@ -6,6 +6,7 @@ import { useHttpClient } from "../../../Hooks/http-hook";
 import { AuthContext } from "../../../Context/auth-context";
 import { VALIDATOR_REQUIRE } from "../../../util/validators";
 
+import ErrorModal from "../../../Components/Shared/ErrorModal";
 import Input from "../../../Components/Shared/Input";
 import Avatar from "../../../Components/Shared/Avatar";
 import Waiting from "../../../Components/Shared/Waitings";
@@ -15,15 +16,19 @@ import messageimg from "../../../File/Icon/message.png";
 import ticketimg from "../../../File/Icon/ticket.png";
 import edit from "../../../File/Icon/edit.png";
 import postimg from "../../../File/Icon/post.png";
+import plus from "../../../File/Icon/plus.png";
 
 const Profil = () => {
   const userId = useParams().userId;
   const [user, setUser] = useState();
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [nboflike, setnboflike] = useState();
+  const { isLoading, error, sendRequest, clearerror } = useHttpClient();
+
   const auth = useContext(AuthContext);
 
-  //GET INFO USER
+  //GET INFO USER WHEN PAGE LOAD
   useEffect(() => {
+    setnboflike(0);
     const sendReq = async () => {
       try {
         const response = await sendRequest(
@@ -37,6 +42,8 @@ const Profil = () => {
 
   const [changeModeEditName, setchangeModeEditName] = useState(false);
   const [changeModeEditFirstName, setchangeModeEditFistName] = useState(false);
+  const [changeModeEditBio, setchangeModeEditBio] = useState(false);
+  const [changeModeEditLikes, setchangeModeEditLikes] = useState(false);
 
   const [authStateName, inputhandlerName, setformDataName] = useForm(
     {
@@ -60,13 +67,23 @@ const Profil = () => {
     },
     true
   );
+  const [authStateBio, inputhandlerBio, setformDataBio] = useForm(
+    {
+      bio: {
+        value: user ? user.bio : "",
+        isValid: true,
+      },
+    },
+    true
+  );
+  const [authStateLikes, inputhandlerLikes, setformDataLikes] = useForm(
+    {},
+    true
+  );
 
   // SHOW/HIDE MODIF NAME
 
   const ChangeNameHandler = () => {
-    console.log(user.name);
-    console.log(authStateName);
-    console.log(authStateFirstName);
     setformDataName(
       {
         name: {
@@ -94,32 +111,154 @@ const Profil = () => {
     setchangeModeEditFistName((prvMode) => !prvMode);
   };
 
+  // SHOW/HIDE MODIF BIO
+
+  const ChangeBioHandler = () => {
+    setformDataBio(
+      {
+        bio: {
+          value: authStateBio.inputs.bio.value,
+          isValid: false,
+        },
+      },
+      false
+    );
+    setchangeModeEditBio((prvMode) => !prvMode);
+  };
+
+  // SHOW/HIDE MODIF LIKES
+
+  const ChangeLikesHandler = () => {
+    setformDataLikes({}, false);
+    setchangeModeEditLikes((prvMode) => !prvMode);
+  };
+
+  //ADDING LIKE
+
+  const addValueLike = () => {
+    setformDataLikes(
+      {
+        ...authStateLikes.inputs,
+        ["Newlike " + nboflike]: {
+          value: "Newlike",
+          isValid: true,
+        },
+      },
+      false
+    );
+    user.likes.push("Newlike " + nboflike);
+    console.log(user.likes);
+    setnboflike((prev) => prev + 1);
+  };
+
   // SEND MODIFNAME
 
-  const userUpdateSubmitHandler = (e) => {
+  const NameSubHandler = async (e) => {
     e.preventDefault();
-    user.name = authStateName.inputs.name.value;
-    //A Faire en ajoutant un API Pour ca
+    if (user.name !== authStateName.inputs.name.value) {
+      try {
+        await sendRequest(
+          `http://localhost:5000/api/user/${userId}`,
+          "PATCH",
+          JSON.stringify({ name: authStateName.inputs.name.value }),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+      } catch (err) {}
+      user.name = authStateName.inputs.name.value;
+    }
     setchangeModeEditName((prvMode) => !prvMode);
   };
 
   // SEND MODIFFIRSTNAME
 
-  const userUpdateSubmitHandler2 = (e) => {
+  const FirstNameSubHandler = async (e) => {
     e.preventDefault();
-    user.firstname = authStateFirstName.inputs.firstname.value;
-    //A Faire en ajoutant un API Pour ca
+    if (user.firstname !== authStateFirstName.inputs.firstname.value) {
+      try {
+        await sendRequest(
+          `http://localhost:5000/api/user/${userId}`,
+          "PATCH",
+          JSON.stringify({
+            firstname: authStateFirstName.inputs.firstname.value,
+          }),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+      } catch (err) {}
+      user.firstname = authStateFirstName.inputs.firstname.value;
+    }
     setchangeModeEditFistName((prvMode) => !prvMode);
+  };
+
+  // SEND MODIFBIO
+
+  const BioSubHandler = async (e) => {
+    e.preventDefault();
+    if (user.bio !== authStateBio.inputs.bio.value) {
+      try {
+        await sendRequest(
+          `http://localhost:5000/api/user/${userId}`,
+          "PATCH",
+          JSON.stringify({
+            bio: authStateBio.inputs.bio.value,
+          }),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+      } catch (err) {}
+      user.bio = authStateBio.inputs.bio.value;
+    }
+    setchangeModeEditBio((prvMode) => !prvMode);
+  };
+
+  // SEND MODIF LIKES
+
+  const LikesSubHandler = async (e) => {
+    e.preventDefault();
+    user.likes = [];
+    for (var i in authStateLikes.inputs) {
+      if (
+        !user.likes.includes(authStateLikes.inputs[i].value) &&
+        authStateLikes.inputs[i].value !== ""
+      ) {
+        user.likes.push(authStateLikes.inputs[i].value);
+      }
+    }
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/user/${userId}`,
+        "PATCH",
+        JSON.stringify({
+          likes: user.likes,
+        }),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
+        }
+      );
+    } catch (err) {}
+    setchangeModeEditLikes((prvMode) => !prvMode);
   };
 
   return (
     <React.Fragment>
+      <ErrorModal error={error} onClear={clearerror} />
       {isLoading && <Waiting />}
       {user && (
         <React.Fragment>
           <div className="Page_User">
             <div className="user">
-              <div className="user__pic">
+              <div
+                className="user__pic"
+                onClick={() => console.log(authStateLikes)}
+              >
                 <Avatar image={user.img} alt={user.name} width="200px" />
               </div>
               <div className="user__info">
@@ -148,11 +287,7 @@ const Profil = () => {
                   )}
                   {changeModeEditName && (
                     <React.Fragment>
-                      <form
-                        className="changeparam"
-                        onSubmit={userUpdateSubmitHandler}
-                        value={"df"}
-                      >
+                      <form className="changeparam" onSubmit={NameSubHandler}>
                         <Input
                           id="name"
                           element="input"
@@ -196,7 +331,7 @@ const Profil = () => {
                     <React.Fragment>
                       <form
                         className="changeparam"
-                        onSubmit={userUpdateSubmitHandler2}
+                        onSubmit={FirstNameSubHandler}
                       >
                         <Input
                           id="firstname"
@@ -226,14 +361,91 @@ const Profil = () => {
                   <p>{user.username}</p>
                 </div>
                 <div className="user__bio">
-                  <p>{user.bio}</p>
+                  {!changeModeEditBio && (
+                    <React.Fragment>
+                      <p>{user.bio}</p>
+                      {auth.userId === userId && (
+                        <img
+                          src={edit}
+                          className="icon"
+                          alt="edit"
+                          style={{ opacity: 0.5 }}
+                          onClick={ChangeBioHandler}
+                        />
+                      )}
+                    </React.Fragment>
+                  )}
+                  {changeModeEditBio && (
+                    <React.Fragment>
+                      <form className="changeparamBio" onSubmit={BioSubHandler}>
+                        <Input
+                          id="bio"
+                          type="text"
+                          validators={[VALIDATOR_REQUIRE()]}
+                          onInput={inputhandlerBio}
+                          initialvalue={user.bio}
+                          initialvalid={true}
+                        />
+                        <button type="submit" disabled={!authStateBio.isValid}>
+                          Change
+                        </button>
+                      </form>
+                    </React.Fragment>
+                  )}
                 </div>
                 <div className="user__likes">
-                  {user.likes.map((like) => (
-                    <div className="likes" key={like}>
-                      {like}
-                    </div>
-                  ))}
+                  {!changeModeEditLikes && (
+                    <React.Fragment>
+                      {user.likes.map((like, index) => (
+                        <div className="likes" key={like + index}>
+                          {like}
+                        </div>
+                      ))}
+                      <div className="likes" onClick={ChangeLikesHandler}>
+                        <img
+                          src={edit}
+                          className="icon"
+                          alt="edit"
+                          style={{ opacity: 0.5 }}
+                        />
+                      </div>
+                    </React.Fragment>
+                  )}
+                  {changeModeEditLikes && (
+                    <React.Fragment>
+                      <form
+                        className="changeparamBio"
+                        onSubmit={LikesSubHandler}
+                      >
+                        {user.likes.map((like, index) => (
+                          <React.Fragment key={like + index}>
+                            <Input
+                              id={like}
+                              element="input"
+                              type="input"
+                              validators={[VALIDATOR_REQUIRE()]}
+                              onInput={inputhandlerLikes}
+                              initialvalue={like}
+                              initialvalid={true}
+                            />
+                          </React.Fragment>
+                        ))}
+                        <button
+                          onClick={addValueLike}
+                          className="addlike"
+                          disabled={!authStateLikes.isValid}
+                        >
+                          <img src={plus} alt="plus" />
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={!authStateLikes.isValid}
+                        >
+                          Change
+                        </button>
+                      </form>
+                    </React.Fragment>
+                  )}
                 </div>
               </div>
             </div>
@@ -257,7 +469,6 @@ const Profil = () => {
           </div>
         </React.Fragment>
       )}
-      {!user && <div className="marhceap">Wainting à faire</div>}
     </React.Fragment>
   );
 };

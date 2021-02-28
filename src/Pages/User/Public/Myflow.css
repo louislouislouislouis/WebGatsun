@@ -32,6 +32,7 @@
   margin-top: 50px;
   max-width: 300px;
   width: 90%;
+  overflow-wrap: break-word;
 }
 .user__name {
   display: grid;
@@ -47,8 +48,13 @@
   grid-template-columns: 90px auto 40px;
   align-items: center;
 }
+
 .user__bio p {
   text-align: center !important;
+}
+.changeparamBio {
+  overflow: hidden;
+  border-radius: 5px;
 }
 
 .form {
@@ -90,4 +96,7 @@ button {
 }
 .other img {
   height: 50px;
+}
+.addlike img {
+  width: 15px;
 }
