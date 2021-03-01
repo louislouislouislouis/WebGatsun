@@ -3,9 +3,12 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHttpClient } from "../../../Hooks/http-hook";
 import { AuthContext } from "../../../Context/auth-context";
 import Avatar from "../../../Components/Shared/Avatar";
+import Modal from "../../../Components/Shared/Modal";
 
 const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [showUserProp, setshowUserProp] = useState(false);
+  const [UserHighlight, setUserHighlightp] = useState();
   const [allusers, setallusers] = useState();
   const auth = useContext(AuthContext);
   useEffect(() => {
@@ -41,14 +44,45 @@ const Users = () => {
       );
     } catch (err) {}
   };
+
+  //HANDLER SHOW USER USER PROPS
+  const showuserpropsHandler = (usr) => {
+    setshowUserProp(true);
+    setUserHighlightp(usr);
+    console.log(usr);
+    console.log(UserHighlight);
+  };
+  //HANDLER HIDE USER USER PROPS
+  const hideuserpropsHandler = (usr) => {
+    setshowUserProp(false);
+    setUserHighlightp(undefined);
+  };
+
   return (
     <React.Fragment>
+      <Modal
+        show={showUserProp}
+        onCancel={hideuserpropsHandler}
+        header={
+          UserHighlight
+            ? `${UserHighlight.firstName} ${UserHighlight.name}`
+            : "User"
+        }
+        contentClass="place-item__content"
+        footerClass="place-item__modal-actions"
+        footer={<button onClick={hideuserpropsHandler}> CLOSE</button>}
+      ></Modal>
       {allusers &&
         allusers.map((usr) => {
           return (
-            <div key={usr.id} onClick={() => handlecreateconv(usr.id)}>
+            <div key={usr.id}>
               <div className="name">{usr.id}</div>
-              <Avatar image={usr.img} alt={usr.id} width="100px"></Avatar>
+              <Avatar
+                image={usr.img}
+                alt={usr.id}
+                width="100px"
+                onClick={() => showuserpropsHandler(usr)}
+              ></Avatar>
             </div>
           );
         })}

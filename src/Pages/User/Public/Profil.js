@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useHistory } from "react-router-dom";
 
 import { useForm } from "../../../Hooks/form-hook";
 import { useHttpClient } from "../../../Hooks/http-hook";
@@ -9,7 +9,7 @@ import { VALIDATOR_REQUIRE } from "../../../util/validators";
 import ErrorModal from "../../../Components/Shared/ErrorModal";
 import Input from "../../../Components/Shared/Input";
 import Avatar from "../../../Components/Shared/Avatar";
-import Waiting from "../../../Components/Shared/Waitings";
+import Waitings from "../../../Components/Shared/Waitings";
 import "./Myflow.css";
 
 import messageimg from "../../../File/Icon/message.png";
@@ -22,23 +22,11 @@ const Profil = () => {
   const userId = useParams().userId;
   const [user, setUser] = useState();
   const [nboflike, setnboflike] = useState();
-  const { isLoading, error, sendRequest, clearerror } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const auth = useContext(AuthContext);
 
-  //GET INFO USER WHEN PAGE LOAD
-  useEffect(() => {
-    setnboflike(0);
-    const sendReq = async () => {
-      try {
-        const response = await sendRequest(
-          `http://localhost:5000/api/user/${userId}`
-        );
-        setUser(response);
-      } catch (err) {}
-    };
-    sendReq();
-  }, [userId, sendRequest]);
+  const history = useHistory();
 
   const [changeModeEditName, setchangeModeEditName] = useState(false);
   const [changeModeEditFirstName, setchangeModeEditFistName] = useState(false);
@@ -80,6 +68,21 @@ const Profil = () => {
     {},
     true
   );
+
+  //GET INFO USER WHEN PAGE LOAD
+
+  useEffect(() => {
+    setnboflike(0);
+    const sendReq = async () => {
+      try {
+        const response = await sendRequest(
+          `http://localhost:5000/api/user/${userId}`
+        );
+        setUser(response);
+      } catch (err) {}
+    };
+    sendReq();
+  }, [userId, sendRequest]);
 
   // SHOW/HIDE MODIF NAME
 
@@ -247,10 +250,20 @@ const Profil = () => {
     setchangeModeEditLikes((prvMode) => !prvMode);
   };
 
+  //IN CASE OF ERROR RETURN HOME HANDLER
+  const LinktoHome = () => {
+    history.push("/");
+  };
+
   return (
     <React.Fragment>
-      <ErrorModal error={error} onClear={clearerror} />
-      {isLoading && <Waiting />}
+      <ErrorModal
+        error={error}
+        onClear={clearError}
+        onClearAction={LinktoHome}
+        action="Go Home"
+      />
+      {isLoading && <Waitings />}
       {user && (
         <React.Fragment>
           <div className="Page_User">
@@ -401,14 +414,16 @@ const Profil = () => {
                           {like}
                         </div>
                       ))}
-                      <div className="likes" onClick={ChangeLikesHandler}>
-                        <img
-                          src={edit}
-                          className="icon"
-                          alt="edit"
-                          style={{ opacity: 0.5 }}
-                        />
-                      </div>
+                      {auth.userId === userId && (
+                        <div className="likes" onClick={ChangeLikesHandler}>
+                          <img
+                            src={edit}
+                            className="icon"
+                            alt="edit"
+                            style={{ opacity: 0.5 }}
+                          />
+                        </div>
+                      )}
                     </React.Fragment>
                   )}
                   {changeModeEditLikes && (
@@ -449,23 +464,27 @@ const Profil = () => {
                 </div>
               </div>
             </div>
-            <div className="other">
-              <div className="myposts">
-                <NavLink to={`/${userId}/post`}>
-                  <img src={postimg} alt="post" />
-                </NavLink>
-              </div>
-              <div className="mymessage">
-                <NavLink to={`/${userId}/conv`}>
-                  <img src={messageimg} alt="message" />
-                </NavLink>
-              </div>
-              <div className="mydemand">
-                <NavLink to={`/${userId}/demand`}>
-                  <img src={ticketimg} alt="postimg" />
-                </NavLink>
-              </div>
-            </div>
+            {auth.userId === userId && (
+              <React.Fragment>
+                <div className="other">
+                  <div className="myposts">
+                    <NavLink to={`/${userId}/post`}>
+                      <img src={postimg} alt="post" />
+                    </NavLink>
+                  </div>
+                  <div className="mymessage">
+                    <NavLink to={`/${userId}/conv`}>
+                      <img src={messageimg} alt="message" />
+                    </NavLink>
+                  </div>
+                  <div className="mydemand">
+                    <NavLink to={`/${userId}/demand`}>
+                      <img src={ticketimg} alt="postimg" />
+                    </NavLink>
+                  </div>
+                </div>
+              </React.Fragment>
+            )}
           </div>
         </React.Fragment>
       )}

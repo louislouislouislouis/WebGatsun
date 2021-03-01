@@ -23,7 +23,7 @@ const UserMessages = () => {
 
   const msgRef = useRef();
   const auth = useContext(AuthContext);
-  const userId = useParams().userId;
+
   const [myconv, setrconv] = useState();
   const convId = useParams().convId;
   const evtSrclive = useRef(null);
@@ -32,10 +32,10 @@ const UserMessages = () => {
   const listenEvt = useCallback(() => {
     if (!evtSrclive.current) {
       evtSrclive.current = new EventSource(
-        `http://localhost:5000/api/live/${userId}`
+        `http://localhost:5000/api/live/${auth.userId}`
       );
     }
-  }, [userId]);
+  }, [auth.userId]);
 
   const [MsgState, inputhandler, setformData] = useForm(
     {
@@ -162,12 +162,14 @@ const UserMessages = () => {
             {myconv.messages.map((index) => {
               return (
                 <div
-                  className={`${userId === index.from ? "my" : "other"}msg`}
+                  className={`${
+                    auth.userId === index.from ? "my" : "other"
+                  }msg`}
                   key={index.date + index.from}
                 >
                   <div
                     className={`${
-                      userId === index.from ? "my" : "other"
+                      auth.userId === index.from ? "my" : "other"
                     }msg__content`}
                   >
                     <p>{index.body}</p>
@@ -194,7 +196,7 @@ const UserMessages = () => {
           </form>
         </div>
       )}
-      <NavLink to={`/${userId}/conv`}>
+      <NavLink to={`/${auth.userId}/conv`}>
         <img src={backimg} alt="retour"></img>
       </NavLink>
     </div>

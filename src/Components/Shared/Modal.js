@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { CSSTransition } from "react-transition-group";
 
@@ -7,23 +7,25 @@ import "./modal.css";
 
 const ModamOverlay = (props) => {
   const content = (
-    <div className={`modal ${props.className}`} style={props.style}>
-      <header className={`modal__header ${props.headerClass}`}>
-        <h2>{props.header}</h2>
-      </header>
-      <form
-        onSubmit={
-          props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
-        }
-      >
-        <div className={`modal__content ${props.contentClass}`}>
-          {props.children}
-        </div>
-        <footer className={`modal__footer ${props.footerClass}`}>
-          {props.footer}
-        </footer>
-      </form>
-    </div>
+    <React.Fragment>
+      <div className={`modal ${props.className}`} style={props.style}>
+        <header className={`modal__header ${props.headerClass}`}>
+          <h2>{props.header}</h2>
+        </header>
+        <form
+          onSubmit={
+            props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
+          }
+        >
+          <div className={`modal__content ${props.contentClass}`}>
+            {props.children}
+          </div>
+          <footer className={`modal__footer ${props.footerClass}`}>
+            {props.footer}
+          </footer>
+        </form>
+      </div>
+    </React.Fragment>
   );
   return ReactDOM.createPortal(content, document.getElementById("modal-hook"));
 };
@@ -37,9 +39,9 @@ const Modal = (props) => {
         mountOnEnter
         unmountOnExit
         timeout={{
-          appear: 9000,
-          enter: 9000,
-          exit: 9000,
+          appear: 200,
+          enter: 200,
+          exit: 200,
         }}
         classNames="modal"
       >

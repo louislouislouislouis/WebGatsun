@@ -33,7 +33,7 @@ function App() {
         <Route path="/user/allusers" exact={true}>
           <Allusers />
         </Route>
-        <Route path="/:userId/conv/:convId" exact={true}>
+        <Route path="/conv/:convId" exact={true}>
           <UserMessages />
         </Route>
         <Route path="/:userId/conv" exact={true}>
