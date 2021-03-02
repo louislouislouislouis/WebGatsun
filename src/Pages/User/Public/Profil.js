@@ -255,6 +255,27 @@ const Profil = () => {
     history.push("/");
   };
 
+  //GO CONV
+  const ConvHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await sendRequest(
+        `http://localhost:5000/api/conv/exist`,
+        "POST",
+        JSON.stringify({
+          userId1: auth.userId,
+          userId2: userId,
+        }),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
+        }
+      );
+      console.log(response);
+      history.push(`/conv/${response.idconv}`);
+    } catch (err) {}
+  };
+
   return (
     <React.Fragment>
       <ErrorModal
@@ -484,6 +505,9 @@ const Profil = () => {
                   </div>
                 </div>
               </React.Fragment>
+            )}
+            {auth.token && auth.userId !== userId && (
+              <button onClick={ConvHandler}>Start conv</button>
             )}
           </div>
         </React.Fragment>

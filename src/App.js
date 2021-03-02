@@ -54,7 +54,7 @@ function App() {
         <Route path="/auth" exact={true}>
           <Auth />
         </Route>
-        <Route path="/:userId/conv/:convId" exact={true}>
+        <Route path="/conv/:convId" exact={true}>
           <NoRight />
         </Route>
         <Route path="/:userId/conv" exact={true}>

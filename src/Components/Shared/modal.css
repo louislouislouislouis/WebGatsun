@@ -27,6 +27,8 @@
 
 .modal__footer {
   padding: 1rem 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 @media (min-width: 768px) {
