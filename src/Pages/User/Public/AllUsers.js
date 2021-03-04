@@ -86,7 +86,11 @@ const Users = () => {
           <Modal
             show={showUserProp}
             onCancel={hideuserpropsHandler}
-            header={`${UserHighlight ? UserHighlight.firstname : ""}`}
+            header={`${
+              UserHighlight
+                ? `${UserHighlight.firstname} ${UserHighlight.name}`
+                : ""
+            }`}
             footer={
               <React.Fragment>
                 <button onClick={hideuserpropsHandler}> Quit</button>

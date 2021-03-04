@@ -29,7 +29,7 @@ const Conv = () => {
           { Authorization: "Bearer " + auth.token }
         );
         if (convsresponse) {
-          setmyconv(convsresponse);
+          setmyconv(convsresponse.convs);
         }
       } catch (err) {}
     };
