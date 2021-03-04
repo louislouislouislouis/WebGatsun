@@ -55,7 +55,7 @@ const Conv = () => {
           {myconv.map((conv) => {
             return (
               <NavLink to={`/conv/${conv.id}`} key={userId + conv.id}>
-                <OneConv with={conv.img} />
+                <OneConv with={conv.image} />
               </NavLink>
             );
           })}

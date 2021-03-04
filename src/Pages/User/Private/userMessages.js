@@ -80,8 +80,9 @@ const UserMessages = () => {
       } catch (err) {}
     };
     vsendReq();
-
-    msgRef.current.scrollTop = msgRef.current.scrollHeight + 100;
+    if (msgRef.current) {
+      msgRef.current.scrollTop = msgRef.current.scrollHeight + 100;
+    }
   }, [convId, sendRequest, auth.token]);
 
   //RECUPERER CONV AU CHARGMEENT DE LA PAGE
@@ -160,7 +161,7 @@ const UserMessages = () => {
           {myconv && (
             <div className="user_conv">
               <div className="user_conv_info">
-                {myconv.img.map((part) => {
+                {myconv.image.map((part) => {
                   return (
                     <div key={part} className="participants">
                       <Avatar image={part} alt={part} width="50px"></Avatar>
