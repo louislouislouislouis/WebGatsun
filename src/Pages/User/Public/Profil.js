@@ -78,6 +78,7 @@ const Profil = () => {
         const response = await sendRequest(
           `http://localhost:5000/api/user/${userId}`
         );
+        console.log(response);
         setUser(response);
       } catch (err) {}
     };
@@ -132,7 +133,21 @@ const Profil = () => {
   // SHOW/HIDE MODIF LIKES
 
   const ChangeLikesHandler = () => {
-    setformDataLikes({}, false);
+    console.log(user.likes);
+    if (user.likes.length === 0) {
+      setformDataLikes(
+        {
+          ...authStateLikes.inputs,
+          ["Newlike " + nboflike]: {
+            value: "Newlike" + nboflike,
+            isValid: true,
+          },
+        },
+        false
+      );
+    }
+    user.likes.push("Newlike " + nboflike);
+    setnboflike((prev) => prev + 1);
     setchangeModeEditLikes((prvMode) => !prvMode);
   };
 
@@ -143,7 +158,7 @@ const Profil = () => {
       {
         ...authStateLikes.inputs,
         ["Newlike " + nboflike]: {
-          value: "Newlike",
+          value: "Newlike" + nboflike,
           isValid: true,
         },
       },
@@ -234,6 +249,19 @@ const Profil = () => {
         user.likes.push(authStateLikes.inputs[i].value);
       }
     }
+    setformDataLikes({}, false);
+    user.likes.forEach((like) => {
+      setformDataLikes(
+        {
+          [like]: {
+            value: like,
+            isValid: true,
+          },
+        },
+        false
+      );
+    });
+
     try {
       await sendRequest(
         `http://localhost:5000/api/user/${userId}`,
@@ -289,11 +317,16 @@ const Profil = () => {
         <React.Fragment>
           <div className="Page_User">
             <div className="user">
-              <div
-                className="user__pic"
-                onClick={() => console.log(authStateLikes)}
-              >
-                <Avatar image={user.img} alt={user.name} width="200px" />
+              <div className="user__pic">
+                <Avatar
+                  onClick={() => {
+                    console.log(authStateLikes.inputs);
+                    console.log(user);
+                  }}
+                  image={user.image}
+                  alt={user.name}
+                  width="200px"
+                />
               </div>
               <div className="user__info">
                 <div
@@ -390,10 +423,6 @@ const Profil = () => {
                   <p>Email :</p>
                   <p>{user.email}</p>
                 </div>
-                <div className="user__email">
-                  <p>Username :</p>
-                  <p>{user.username}</p>
-                </div>
                 <div className="user__bio">
                   {!changeModeEditBio && (
                     <React.Fragment>
@@ -473,12 +502,7 @@ const Profil = () => {
                         >
                           <img src={plus} alt="plus" />
                         </button>
-                        <button
-                          type="submit"
-                          disabled={!authStateLikes.isValid}
-                        >
-                          Change
-                        </button>
+                        <button type="submit">Change</button>
                       </form>
                     </React.Fragment>
                   )}

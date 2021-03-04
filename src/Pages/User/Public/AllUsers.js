@@ -29,7 +29,7 @@ const Users = () => {
           `http://localhost:5000/api/user/alluser`
         );
         if (convsresponse) {
-          setallusers(convsresponse);
+          setallusers(convsresponse.users);
         }
       } catch (err) {}
     };
@@ -102,7 +102,7 @@ const Users = () => {
             {
               <React.Fragment>
                 <Avatar
-                  image={UserHighlight ? UserHighlight.img : ""}
+                  image={UserHighlight ? UserHighlight.image : ""}
                   alt={UserHighlight ? UserHighlight.name : ""}
                   width={"200px"}
                 ></Avatar>
@@ -120,7 +120,7 @@ const Users = () => {
                     <p>{`${usr.firstname} ${usr.name}`}</p>
                   </div>
                   <Avatar
-                    image={usr.img}
+                    image={usr.image}
                     alt={usr.id}
                     width="100px"
                     onClick={() => showuserpropsHandler(usr)}
