@@ -17,6 +17,8 @@ import UserMessages from "./Pages/User/Private/userMessages";
 import Conv from "./Pages/User/Private/Conv";
 import Auth from "./Pages/Auth/Auth";
 import NoRight from "./Pages/User/Public/NoRight";
+import Demand from "./Pages/Demand/Demand";
+import NewDemand from "./Pages/Demand/NewDemand";
 
 //import Waitings from "./Components/Shared/Waitings";
 
@@ -30,6 +32,12 @@ function App() {
         <Route path="/" exact={true}>
           <Home />
         </Route>
+        <Route path="/demand" exact={true}>
+          <Demand />
+        </Route>
+        <Route path="/demand/new" exact={true}>
+          <NewDemand />
+        </Route>
         <Route path="/user/allusers" exact={true}>
           <Allusers />
         </Route>
@@ -42,6 +50,9 @@ function App() {
         <Route path="/:userId/profil" exact={true}>
           <Profil />
         </Route>
+        <Route path="/auth" exact={true}>
+          <Auth show={true} />
+        </Route>
         <Redirect to="/" />
       </Switch>
     );
@@ -52,7 +63,7 @@ function App() {
           <Home />
         </Route>
         <Route path="/auth" exact={true}>
-          <Auth />
+          <Auth show={true} />
         </Route>
         <Route path="/conv/:convId" exact={true}>
           <NoRight />
@@ -66,6 +77,7 @@ function App() {
         <Route path="/:userId/profil" exact={true}>
           <Profil />
         </Route>
+
         <Redirect to="/" />
       </Switch>
     );

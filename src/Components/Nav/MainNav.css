@@ -1,19 +1,31 @@
 .Header {
   background-color: #f19b44;
-  height: 60px;
+  height: 12vh;
+  max-height: 120px;
+  min-height: 90px;
   display: flex;
+  position: fixed;
+  top: 0;
   align-items: center;
+  width: 100%;
   justify-content: space-around;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
   background: #f19b44;
-  box-shadow: inset 10px 10px 30px #cd843a, inset -10px -10px 30px #ffb24e;
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  -webkit-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  background: rgb(255, 166, 77);
+  background: linear-gradient(90deg, #ffa64d 0%, #feb175 100%);
+}
+.IconNav {
+  height: 85px;
+  border-radius: 22px;
+  width: 85px;
+  background-color: rgba(0, 0, 0, 0.08);
+  display: flex;
 }
 .Header_img {
-  padding: 4px;
-  border-radius: 50%;
-  height: 40px;
-
-  background: #f19b44;
-  box-shadow: inset 2px 2px 4px #cd843a, inset -2px -2px 4px #ffb24e;
+  height: 82%;
+  margin: 0 auto 0 auto;
+  display: block;
+  margin: auto;
 }

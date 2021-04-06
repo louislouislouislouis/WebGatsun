@@ -523,7 +523,7 @@ const Profil = () => {
                     </NavLink>
                   </div>
                   <div className="mydemand">
-                    <NavLink to={`/${userId}/demand`}>
+                    <NavLink to={`/demand`}>
                       <img src={ticketimg} alt="postimg" />
                     </NavLink>
                   </div>

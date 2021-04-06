@@ -17,8 +17,7 @@
   align-items: center;
 }
 .Page_User {
-  position: absolute;
-
+  margin-top: 12vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -62,14 +61,12 @@
 }
 
 button {
-  margin-left: 10px;
-  font: inherit;
-  border-radius: 15px;
-  height: 30px;
-  background: #f19b45;
-  color: white;
+  margin: 20px auto 0 auto;
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.16);
+  border: 0px;
   cursor: pointer;
   text-decoration: none;
+  color: black;
 }
 .likes {
   border: 2px solid rgba(255, 255, 255, 0.24);

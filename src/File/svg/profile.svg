@@ -1,0 +1,53 @@
+<svg id="Calque_8_-_copie_9" data-name="Calque 8 - copie 9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 233.84 233.84">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fdc286;
+      }
+
+      .cls-1, .cls-3, .cls-4, .cls-5, .cls-7, .cls-8 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-1, .cls-7 {
+        stroke-width: 8px;
+      }
+
+      .cls-2 {
+        opacity: 0.15;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-7, .cls-8 {
+        fill: none;
+      }
+
+      .cls-3, .cls-4 {
+        stroke-linecap: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-8 {
+        stroke-width: 6px;
+      }
+
+      .cls-4, .cls-5 {
+        opacity: 0.34;
+      }
+
+      .cls-6 {
+        fill: #fff;
+        opacity: 0.23;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M507.64,530.22H425.57a71.81,71.81,0,0,1-71.88-71.89V376.26a71.88,71.88,0,0,1,71.88-71.88h82.07a71.89,71.89,0,0,1,71.89,71.88v82.07A71.89,71.89,0,0,1,507.64,530.22Z" transform="translate(-349.69 -300.38)"/>
+  <path class="cls-2" d="M410.49,526.25C481.76,531.9,565.17,501,575.69,417.3c2.5-19.95,3.84,41,3.84,41l-5,26.51L561,506.47l-17.42,14.11-24.45,8.71S339.22,520.6,410.49,526.25Z" transform="translate(-349.69 -300.38)"/>
+  <circle class="cls-3" cx="116.92" cy="116.92" r="70.73"/>
+  <path class="cls-3" d="M407.51,455.38s22.72-23.93,59.42-23.93,58,22.27,58,22.27" transform="translate(-349.69 -300.38)"/>
+  <circle class="cls-4" cx="118.56" cy="118.9" r="70.73"/>
+  <path class="cls-4" d="M409.15,457.36s22.72-23.93,59.42-23.93S525,454.28,525,454.28" transform="translate(-349.69 -300.38)"/>
+  <circle class="cls-5" cx="119.07" cy="103.91" r="26.35"/>
+  <path class="cls-6" d="M359.14,389.37s-6.4-22.21,16.18-25.41,112.57-81.55,201.42-7.37c5.07-10-4.7-17.15-4.7-17.15L539.27,310l-38.15-6.25h-87.8l-21.6,9.72L369.23,334l-9.34,22.56" transform="translate(-349.69 -300.38)"/>
+  <path class="cls-7" d="M507.64,530.22H425.57a71.81,71.81,0,0,1-71.88-71.89V376.26a71.88,71.88,0,0,1,71.88-71.88h82.07a71.89,71.89,0,0,1,71.89,71.88v82.07A71.89,71.89,0,0,1,507.64,530.22Z" transform="translate(-349.69 -300.38)"/>
+  <circle class="cls-8" cx="117.43" cy="101.94" r="26.35"/>
+</svg>

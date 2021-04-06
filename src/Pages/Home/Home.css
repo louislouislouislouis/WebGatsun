@@ -1,0 +1,45 @@
+.homepage {
+  padding-top: 43px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  overflow: hidden;
+  margin-top: 12vh;
+}
+
+.homepage p {
+  margin-top: 11px;
+  margin-bottom: 4px;
+}
+.IconContainer {
+  display: flex;
+}
+
+.UnconnectedIndividualIcon {
+  margin: 0 25px 0 25px;
+}
+.connectedIndividualIcon {
+  margin: 0 5px 10px 5px;
+}
+.connectedIndividualIcon p {
+  margin-top: px;
+}
+
+.IconsvgImg {
+  box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.16);
+  -webkit-box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.16);
+  -moz-box-shadow: 3px 5px 6px 0px rgba(0, 0, 0, 0.16);
+}
+.IconContainerConnect {
+  margin-top: 43px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    ". ."
+    ". ."
+    ". .";
+}

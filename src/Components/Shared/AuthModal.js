@@ -2,7 +2,7 @@ import React from "react";
 
 import Modal from "./Modal";
 
-const AuthModal = (props) => {
+const ErrorModal = (props) => {
   return (
     <Modal
       onCancel={props.onClear}
@@ -17,4 +17,4 @@ const AuthModal = (props) => {
   );
 };
 
-export default AuthModal;
+export default ErrorModal;

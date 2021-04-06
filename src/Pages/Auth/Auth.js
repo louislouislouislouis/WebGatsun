@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Input from "../../Components/Shared/Input";
 import {
   VALIDATOR_EMAIL,
@@ -8,8 +8,11 @@ import {
 import { AuthContext } from "../../Context/auth-context";
 
 import { useForm } from "../../Hooks/form-hook";
-const Auth = () => {
+import Modal from "../../Components/Shared/Modal";
+import Button from "../../Components/Shared/Button";
+const Auth = (props) => {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [errorText, setErrorText] = useState(null);
   const auth = useContext(AuthContext);
   const [authState, inputhandler, setformData] = useForm(
     {
@@ -24,6 +27,7 @@ const Auth = () => {
     },
     false
   );
+  console.log(isLoginMode);
   const switchModeHandler = () => {
     if (!isLoginMode) {
       setformData(
@@ -77,10 +81,16 @@ const Auth = () => {
             password: authState.inputs.password.value,
           }),
         });
-
         const responseData = await response.json();
-        console.log(responseData);
-        auth.login(responseData.userId, responseData.token);
+        console.log(response.status);
+        if (response.status === 201) {
+          console.log(responseData);
+          auth.login(responseData.userId, responseData.token);
+          props.onCancel();
+        } else {
+          console.log(responseData);
+          setErrorText(responseData.message);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -110,79 +120,114 @@ const Auth = () => {
       }
     }
   };
+  const cancelHandler = () => {
+    props.onCancel();
+    setErrorText(null);
+  };
+
+  const [style, setstyle] = useState("calc((100vh - 529px) / 2)");
+  useEffect(() => {
+    const top2 =
+      (window.innerHeight - 880) / 2 > 0 ? (window.innerHeight - 880) / 2 : 0;
+    const top1 =
+      (window.innerHeight - 529) / 2 > 0 ? (window.innerHeight - 529) / 2 : 0;
+    setstyle(() => (isLoginMode ? `${top1}px` : `${top2}px`));
+  }, [isLoginMode]);
   return (
     <React.Fragment>
-      <div className="List">HEO</div>
-      <form onSubmit={userUpdateSubmitHandler}>
-        {!isLoginMode && (
+      <Modal
+        top={style}
+        //transform={!isLoginMode ? "translateY(-140px)" : ""}
+        show={props.show}
+        onCancel={cancelHandler}
+      >
+        <form onSubmit={userUpdateSubmitHandler}>
+          {!isLoginMode && (
+            <Input
+              id="name"
+              element="input"
+              type="text"
+              label="Your name"
+              errorText="please enter a valid name"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            />
+          )}
+          {!isLoginMode && (
+            <Input
+              id="firstName"
+              element="input"
+              type="text"
+              label="Firstname"
+              errorText="please enter a valid FirstName"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            />
+          )}
+          {!isLoginMode && (
+            <Input
+              id="Username"
+              element="input"
+              type="text"
+              label="Your username"
+              errorText="please enter a valid user-name"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            />
+          )}
+          {!isLoginMode && (
+            <Input
+              id="image"
+              element="input"
+              type="text"
+              label="Link to your url image profil"
+              errorText="please enter a url"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            ></Input>
+          )}
           <Input
-            id="name"
+            id="email"
             element="input"
             type="text"
-            label="Your name"
-            errorText="please enter a valid name"
-            validators={[VALIDATOR_REQUIRE()]}
+            label="Email"
+            //errorText="please enter a valid email"
+            validators={[VALIDATOR_EMAIL()]}
             onInput={inputhandler}
           />
-        )}
-        {!isLoginMode && (
           <Input
-            id="firstName"
+            id="password"
             element="input"
-            type="text"
-            label="Firstname"
-            errorText="please enter a valid FirstName"
-            validators={[VALIDATOR_REQUIRE()]}
+            type="password"
+            label="Password"
+            //errorText="Your password must be at least 8characteres"
+            validators={[VALIDATOR_MINLENGTH(1)]}
             onInput={inputhandler}
           />
-        )}
-        {!isLoginMode && (
-          <Input
-            id="Username"
-            element="input"
-            type="text"
-            label="Your username"
-            errorText="please enter a valid user-name"
-            validators={[VALIDATOR_REQUIRE()]}
-            onInput={inputhandler}
+          <Button
+            type="submit"
+            disabled={!authState.isValid}
+            height="56px"
+            text={!isLoginMode ? "Signup" : "Login"}
+            fontsize="30px"
+            borderradius="22px"
+            topmargin="50px"
+            orange
           />
-        )}
-        {!isLoginMode && (
-          <Input
-            id="image"
-            element="input"
-            type="text"
-            label="Link to your url image profil"
-            errorText="please enter a url"
-            validators={[VALIDATOR_REQUIRE()]}
-            onInput={inputhandler}
-          ></Input>
-        )}
-        <Input
-          id="email"
-          element="input"
-          type="text"
-          label="Your Email"
-          errorText="please enter a valid email"
-          validators={[VALIDATOR_EMAIL()]}
-          onInput={inputhandler}
+        </form>
+        <Button
+          onClick={switchModeHandler}
+          height="39px"
+          text="Switch to Signup"
+          fontsize="15px"
+          borderradius="22px"
         />
-        <Input
-          id="password"
-          element="input"
-          type="password"
-          label="Password"
-          errorText="Your password must be at least 8characteres"
-          validators={[VALIDATOR_MINLENGTH(1)]}
-          onInput={inputhandler}
-        />
-        <button type="submit" disabled={!authState.isValid}>
-          {!isLoginMode ? "SIGNUP" : "LOGIN"}
-        </button>
-      </form>
-      <button onClick={switchModeHandler}>
-        SWITCH TO {isLoginMode ? "SIGNUP" : "LOGIN"}
-      </button>
+        {errorText && (
+          <div className="errorText">
+            <p>{errorText}</p>
+          </div>
+        )}
+      </Modal>
     </React.Fragment>
   );
 };

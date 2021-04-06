@@ -1,9 +1,13 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../Context/auth-context";
+
 import "./MainNav.css";
-import home from "../../File/image/home.png";
-import user from "../../File/image/user.png";
+
+import homesvg from "../../File/svg/Home.svg";
+import postsvg from "../../File/svg/Post.svg";
+import demandsvg from "../../File/svg/demande.svg";
+import msgsvg from "../../File/svg/msg.svg";
 
 const MainNav = (props) => {
   const auth = useContext(AuthContext);
@@ -14,15 +18,29 @@ const MainNav = (props) => {
     <div className="Header">
       <li>
         <NavLink to="/">
-          <div className="Home">
-            <img src={home} alt="home" className="Header_img"></img>
+          <div className="IconNav">
+            <img src={homesvg} alt="home" className="Header_img"></img>
           </div>
         </NavLink>
       </li>
       <li>
         <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
-          <div className="UserInfo">
-            <img src={user} alt="user" className="Header_img"></img>
+          <div className="IconNav">
+            <img src={postsvg} alt="user" className="Header_img"></img>
+          </div>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
+          <div className="IconNav">
+            <img src={demandsvg} alt="user" className="Header_img"></img>
+          </div>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
+          <div className="IconNav">
+            <img src={msgsvg} alt="user" className="Header_img"></img>
           </div>
         </NavLink>
       </li>

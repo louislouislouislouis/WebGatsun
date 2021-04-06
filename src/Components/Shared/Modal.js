@@ -5,25 +5,46 @@ import { CSSTransition } from "react-transition-group";
 import Backdrop from "./Backdrop";
 import "./modal.css";
 
+import svgquit from "../../File/svg/croix.svg";
+
 const ModamOverlay = (props) => {
   const content = (
-    <div className={`modal ${props.className}`} style={props.style}>
-      <header className={`modal__header ${props.headerClass}`}>
-        <h2>{props.header}</h2>
-      </header>
-      <form
+    <React.Fragment>
+      <div
+        className={`modal ${props.className}`}
+        style={{
+          height: props.height,
+          top: props.top,
+          transform: props.transform,
+        }}
+      >
+        <img
+          className="imgquitmodal"
+          src={svgquit}
+          alt="quit"
+          onClick={props.onCancel}
+        />
+        {props.header && (
+          <header className={`modal__header ${props.headerClass}`}>
+            <h2>{props.header}</h2>
+          </header>
+        )}
+        {/* <form
         onSubmit={
           props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
         }
-      >
+      > */}
         <div className={`modal__content ${props.contentClass}`}>
           {props.children}
         </div>
-        <footer className={`modal__footer ${props.footerClass}`}>
-          {props.footer}
-        </footer>
-      </form>
-    </div>
+        {props.footer && (
+          <footer className={`modal__footer ${props.footerClass}`}>
+            {props.footer}
+          </footer>
+        )}
+        {/*   </form> */}
+      </div>
+    </React.Fragment>
   );
   return ReactDOM.createPortal(content, document.getElementById("modal-hook"));
 };
