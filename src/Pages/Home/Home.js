@@ -26,15 +26,14 @@ const Home = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const auth = useContext(AuthContext);
-  console.log(user);
+
   useEffect(() => {
-    if (auth.token) {
+    if (auth.userId) {
       const sendReq = async () => {
         try {
           const response = await sendRequest(
             `http://localhost:5000/api/user/${auth.userId}`
           );
-          console.log(response);
           setUser(response);
         } catch (err) {}
       };

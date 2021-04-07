@@ -73,6 +73,7 @@ const Input = (props) => {
     ) : (
       <textarea
         id={props.id}
+        style={{ height: props.height, borderRadius: props.borderRadius }}
         rows={props.row || 9}
         onChange={ChangeHandler}
         value={inputState.value}
@@ -84,10 +85,15 @@ const Input = (props) => {
     <div
       className={`form-control ${
         !inputState.isValid && inputState.isTouch && "form-control--invalid"
-      }`}
+      } ${props.explication && "form-control--explication"}`}
     >
       <label htmlFor={props.id}>{props.label}</label>
       {element}
+      {props.explication && (
+        <div className="interrogation" onClick={props.onClickexplication}>
+          <div className="roundedinter">?</div>
+        </div>
+      )}
       {!inputState.isValid && inputState.isTouch && props.errorText && (
         <p>{props.errorText}</p>
       )}

@@ -10,10 +10,15 @@ import { AuthContext } from "../../Context/auth-context";
 import { useForm } from "../../Hooks/form-hook";
 import Modal from "../../Components/Shared/Modal";
 import Button from "../../Components/Shared/Button";
+
+import svgquit from "../../File/svg/croix.svg";
+
 const Auth = (props) => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [errorText, setErrorText] = useState(null);
+
   const auth = useContext(AuthContext);
+
   const [authState, inputhandler, setformData] = useForm(
     {
       password: {
@@ -27,7 +32,6 @@ const Auth = (props) => {
     },
     false
   );
-  console.log(isLoginMode);
   const switchModeHandler = () => {
     if (!isLoginMode) {
       setformData(
@@ -35,7 +39,7 @@ const Auth = (props) => {
           ...authState.inputs,
           name: undefined,
           firstName: undefined,
-          Username: undefined,
+          Bio: undefined,
           image: undefined,
         },
         authState.inputs.email.isValid && authState.inputs.password.isValid
@@ -52,9 +56,9 @@ const Auth = (props) => {
             value: "",
             isValid: false,
           },
-          Username: {
+          Bio: {
             value: "",
-            isValid: false,
+            isValid: true,
           },
           image: {
             value: "",
@@ -68,7 +72,6 @@ const Auth = (props) => {
   };
   const userUpdateSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log(isLoginMode);
     if (isLoginMode) {
       try {
         const response = await fetch(`http://localhost:5000/api/user/log`, {
@@ -82,20 +85,17 @@ const Auth = (props) => {
           }),
         });
         const responseData = await response.json();
-        console.log(response.status);
         if (response.status === 201) {
           console.log(responseData);
           auth.login(responseData.userId, responseData.token);
           props.onCancel();
         } else {
-          console.log(responseData);
           setErrorText(responseData.message);
         }
       } catch (err) {
         console.log(err);
       }
     } else {
-      console.log("hehe");
       try {
         const response = await fetch(`http://localhost:5000/api/user/sgnp`, {
           method: "POST",
@@ -105,15 +105,16 @@ const Auth = (props) => {
           body: JSON.stringify({
             email: authState.inputs.email.value,
             password: authState.inputs.password.value,
-            Username: authState.inputs.Username.value,
+            Bio: authState.inputs.Bio.value,
             name: authState.inputs.name.value,
             firstName: authState.inputs.firstName.value,
             image: authState.inputs.image.value,
+            status: status,
+            likes: likes,
           }),
         });
 
         const responseData = await response.json();
-        console.log(responseData);
         auth.login(responseData.userId, responseData.token);
       } catch (err) {
         console.log(err);
@@ -126,6 +127,7 @@ const Auth = (props) => {
   };
 
   const [style, setstyle] = useState("calc((100vh - 529px) / 2)");
+
   useEffect(() => {
     const top2 =
       (window.innerHeight - 880) / 2 > 0 ? (window.innerHeight - 880) / 2 : 0;
@@ -133,6 +135,57 @@ const Auth = (props) => {
       (window.innerHeight - 529) / 2 > 0 ? (window.innerHeight - 529) / 2 : 0;
     setstyle(() => (isLoginMode ? `${top1}px` : `${top2}px`));
   }, [isLoginMode]);
+
+  const explicationHandler = (text) => {
+    setErrorText(text);
+  };
+
+  //managing like
+  const [likes, setlikes] = useState(["Musique"]);
+
+  //transitionninglike
+  const [transition, settransition] = useState(null);
+
+  //removelikehanle
+  const removelikehandle = (like) => {
+    settransition(like);
+    setTimeout(() => {
+      setlikes((prevlikes) => prevlikes.filter((prvlike) => prvlike !== like));
+      settransition(null);
+    }, 500);
+  };
+
+  //state of adding
+  const [adding, setadd] = useState(null);
+
+  //value adding
+  const [myval, setmyval] = useState("");
+
+  const addhandler = () => {
+    setadd(true);
+    setmyval("");
+  };
+  const validateHandle = () => {
+    if (myval !== "" && !likes.includes(myval) && myval.length < 21) {
+      setlikes((prevlikes) => prevlikes.concat([myval]));
+      setErrorText(null);
+    }
+    if (likes.includes(myval)) {
+      setErrorText("You cannot have 2 identiques like");
+    }
+    if (myval.length > 20) {
+      setErrorText("One like should be below 20 charactre");
+    }
+
+    setadd(false);
+  };
+  const changevalhandler = (e) => {
+    setmyval(e.target.value);
+  };
+  const [status, setstatus] = useState("public");
+  const changeStatusHandler = (status) => {
+    setstatus(status);
+  };
   return (
     <React.Fragment>
       <Modal
@@ -142,50 +195,6 @@ const Auth = (props) => {
         onCancel={cancelHandler}
       >
         <form onSubmit={userUpdateSubmitHandler}>
-          {!isLoginMode && (
-            <Input
-              id="name"
-              element="input"
-              type="text"
-              label="Your name"
-              errorText="please enter a valid name"
-              validators={[VALIDATOR_REQUIRE()]}
-              onInput={inputhandler}
-            />
-          )}
-          {!isLoginMode && (
-            <Input
-              id="firstName"
-              element="input"
-              type="text"
-              label="Firstname"
-              errorText="please enter a valid FirstName"
-              validators={[VALIDATOR_REQUIRE()]}
-              onInput={inputhandler}
-            />
-          )}
-          {!isLoginMode && (
-            <Input
-              id="Username"
-              element="input"
-              type="text"
-              label="Your username"
-              errorText="please enter a valid user-name"
-              validators={[VALIDATOR_REQUIRE()]}
-              onInput={inputhandler}
-            />
-          )}
-          {!isLoginMode && (
-            <Input
-              id="image"
-              element="input"
-              type="text"
-              label="Link to your url image profil"
-              errorText="please enter a url"
-              validators={[VALIDATOR_REQUIRE()]}
-              onInput={inputhandler}
-            ></Input>
-          )}
           <Input
             id="email"
             element="input"
@@ -204,6 +213,145 @@ const Auth = (props) => {
             validators={[VALIDATOR_MINLENGTH(1)]}
             onInput={inputhandler}
           />
+          {!isLoginMode && (
+            <Input
+              id="name"
+              element="input"
+              type="text"
+              label="Nom"
+              //errorText="please enter a valid name"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            />
+          )}
+          {!isLoginMode && (
+            <Input
+              id="firstName"
+              element="input"
+              type="text"
+              label="Prenom"
+              validators={[VALIDATOR_REQUIRE()]}
+              onInput={inputhandler}
+            />
+          )}
+
+          {!isLoginMode && (
+            <Input
+              id="image"
+              element="input"
+              type="text"
+              label="Image Url"
+              onInput={inputhandler}
+              initialvalid
+              explication
+              onClickexplication={() =>
+                explicationHandler(
+                  "GatsunWeb doesn't accept directy file for the moment. Please give a link"
+                )
+              }
+            ></Input>
+          )}
+          {!isLoginMode && (
+            <Input
+              id="Bio"
+              type="text"
+              label="Bio"
+              height="90px"
+              initialvalid
+              borderRadius="16px"
+              onInput={inputhandler}
+              explication
+              onClickexplication={() =>
+                explicationHandler("Your bio describe yourself in a few word")
+              }
+            />
+          )}
+          {!isLoginMode && (
+            <div className="form-control">
+              <label>Likes</label>
+
+              <div className="Answerlike">
+                {likes.map((like, index) => {
+                  return (
+                    <React.Fragment key={like + index}>
+                      <div
+                        className="like mylike"
+                        rect={transition === like ? "yes " : "no"}
+                        style={{
+                          transform: ` ${
+                            transition === like ? "translateY(-30px) " : ""
+                          }`,
+                          opacity: ` ${transition === like ? "0" : "1"}`,
+                        }}
+                      >
+                        <img
+                          className="imgquitlike"
+                          src={svgquit}
+                          alt="quit"
+                          onClick={() => {
+                            removelikehandle(like);
+                          }}
+                        />
+                        <p>{like}</p>
+                        {index === likes.length - 1 &&
+                          likes.length < 3 &&
+                          !adding && (
+                            <div className="crox" onClick={addhandler}>
+                              <div className="croxsp" />
+                              <div className="croxsp" />
+                            </div>
+                          )}
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+                {adding && (
+                  <React.Fragment>
+                    <div className={"adding"}>
+                      <input
+                        style={{ width: "150px" }}
+                        value={myval}
+                        onChange={changevalhandler}
+                      />
+                      <div className="validate" onClick={validateHandle}>
+                        <div className="croxsp" />
+                        <div className="croxsp" />
+                      </div>
+                    </div>
+                  </React.Fragment>
+                )}
+                {likes.length === 0 && !adding && (
+                  <div className="validate" onClick={addhandler}>
+                    <div className="croxsp" />
+                    <div className="croxsp" />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {!isLoginMode && (
+            <div className="form-control">
+              <label>Status</label>
+              <div className="Answerstatu">
+                <div
+                  className={`choice${
+                    status === "public" ? "focus" : "unfocus"
+                  }`}
+                  onClick={() => changeStatusHandler("public")}
+                >
+                  <p>Public</p>
+                </div>
+                <div
+                  className={`choice${
+                    status === "private" ? "focus" : "unfocus"
+                  }`}
+                  onClick={() => changeStatusHandler("private")}
+                >
+                  <p>Private</p>
+                </div>
+              </div>
+            </div>
+          )}
           <Button
             type="submit"
             disabled={!authState.isValid}
@@ -211,14 +359,14 @@ const Auth = (props) => {
             text={!isLoginMode ? "Signup" : "Login"}
             fontsize="30px"
             borderradius="22px"
-            topmargin="50px"
+            topmargin={`${isLoginMode ? "50px" : ""}`}
             orange
           />
         </form>
         <Button
           onClick={switchModeHandler}
           height="39px"
-          text="Switch to Signup"
+          text={`Switch to ${isLoginMode ? "Signup" : "Login"}`}
           fontsize="15px"
           borderradius="22px"
         />

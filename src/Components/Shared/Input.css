@@ -2,6 +2,75 @@
   font-weight: 550;
   margin-bottom: 0.5rem;
 }
+.like {
+  background: white;
+  border-radius: 16px;
+  margin: 5px;
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.16);
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+.croxsp {
+  background-color: rgb(31, 14, 2);
+  width: 22px;
+  height: 5px;
+  border-radius: 50px;
+}
+.croxsp:first-child {
+  transform: translateY(50%);
+  top: 50%;
+}
+.croxsp:last-child {
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+.validate {
+  transform: translateY(17px) translateX(5px);
+  opacity: 0.6;
+}
+.choicefocus,
+.choiceunfocus {
+  background: white;
+  border-radius: 16px;
+  margin: 5px;
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.16);
+  position: relative;
+  transition: opacity 0.2s linear;
+}
+.adding {
+  display: flex;
+  width: 50%;
+}
+.Answerstatu {
+  display: flex;
+  justify-content: space-evenly;
+}
+.crox {
+  position: absolute;
+  right: 0;
+  transform: translateY(-19px) translateX(40px);
+  opacity: 0.6;
+}
+.imgquitlike {
+  position: absolute;
+  width: 33px;
+  right: -17px;
+  top: -12px;
+}
+.like p {
+  margin: 6px 10px 6px 010px;
+}
+.choicefocus p,
+.choiceunfocus p {
+  margin: 8px 10px 8px 10px;
+  font-size: 17px;
+}
+.Answerlike {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  padding-top: 5px;
+}
 .form-control {
   margin-bottom: 20px;
 }
@@ -17,12 +86,35 @@
   padding-left: 15px;
   box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.16);
 }
+.form-control--explication {
+  position: relative;
+  width: 100%;
+}
+.roundedinter {
+  border: solid 2px black;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  text-align: center;
+  line-height: 16px;
+}
+.interrogation {
+  position: absolute;
+  top: 50%;
+  opacity: 0.4;
+  right: -30px;
+}
+
 .input {
   width: 100%;
   font: inherit;
   border: 1px solid #ccc;
   background: #f8f8f8;
   padding: 0.9rem 0.25rem;
+}
+.choiceunfocus {
+  opacity: 0.3;
 }
 .form-control input:focus,
 .form-control textarea:focus {
