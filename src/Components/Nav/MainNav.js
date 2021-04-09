@@ -11,9 +11,6 @@ import msgsvg from "../../File/svg/msg.svg";
 
 const MainNav = (props) => {
   const auth = useContext(AuthContext);
-
-  console.log(auth);
-
   return (
     <div className="Header">
       <li>

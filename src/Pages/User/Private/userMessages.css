@@ -1,5 +1,6 @@
 .User__message__page p {
   margin: 5px;
+  margin-top: 12vh;
 }
 .user_conv_info {
   display: flex;

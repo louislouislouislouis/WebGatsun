@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useHttpClient } from "../../Hooks/http-hook";
+
 import Input from "../../Components/Shared/Input";
 import {
   VALIDATOR_EMAIL,
@@ -14,24 +16,45 @@ import Button from "../../Components/Shared/Button";
 import svgquit from "../../File/svg/croix.svg";
 
 const Auth = (props) => {
-  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoginMode, setIsLoginMode] = useState(props.change ? false : true);
   const [errorText, setErrorText] = useState(null);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const auth = useContext(AuthContext);
-
+  const initial = !props.change
+    ? {
+        password: {
+          value: "",
+          isValid: false,
+        },
+        email: {
+          value: "",
+          isValid: false,
+        },
+      }
+    : {
+        name: {
+          value: "",
+          isValid: true,
+        },
+        firstName: {
+          value: "",
+          isValid: true,
+        },
+        Bio: {
+          value: "",
+          isValid: true,
+        },
+        image: {
+          value: "",
+          isValid: true,
+        },
+      };
   const [authState, inputhandler, setformData] = useForm(
-    {
-      password: {
-        value: "",
-        isValid: false,
-      },
-      email: {
-        value: "",
-        isValid: false,
-      },
-    },
-    false
+    initial,
+    props.change ? true : false
   );
+
   const switchModeHandler = () => {
     if (!isLoginMode) {
       setformData(
@@ -86,8 +109,11 @@ const Auth = (props) => {
         });
         const responseData = await response.json();
         if (response.status === 201) {
-          console.log(responseData);
-          auth.login(responseData.userId, responseData.token);
+          auth.login(
+            responseData.userId,
+            responseData.token,
+            responseData.UserImg
+          );
           props.onCancel();
         } else {
           setErrorText(responseData.message);
@@ -105,7 +131,7 @@ const Auth = (props) => {
           body: JSON.stringify({
             email: authState.inputs.email.value,
             password: authState.inputs.password.value,
-            Bio: authState.inputs.Bio.value,
+            bio: authState.inputs.Bio.value,
             name: authState.inputs.name.value,
             firstName: authState.inputs.firstName.value,
             image: authState.inputs.image.value,
@@ -141,7 +167,7 @@ const Auth = (props) => {
   };
 
   //managing like
-  const [likes, setlikes] = useState(["Musique"]);
+  const [likes, setlikes] = useState(props.change ? props.user.likes : []);
 
   //transitionninglike
   const [transition, settransition] = useState(null);
@@ -182,9 +208,36 @@ const Auth = (props) => {
   const changevalhandler = (e) => {
     setmyval(e.target.value);
   };
-  const [status, setstatus] = useState("public");
+  const [status, setstatus] = useState(
+    props.change ? props.user.status : "public"
+  );
   const changeStatusHandler = (status) => {
     setstatus(status);
+  };
+
+  const changehandlersend = async (e) => {
+    e.preventDefault();
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/user/${auth.userId}`,
+        "PATCH",
+        JSON.stringify({
+          bio: authState.inputs.Bio.value,
+          name: authState.inputs.name.value,
+          firstName: authState.inputs.firstName.value,
+          image: authState.inputs.image.value,
+          status: status,
+          likes: likes,
+        }),
+        {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
+        }
+      );
+      props.onCancelreload();
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <React.Fragment>
@@ -194,34 +247,42 @@ const Auth = (props) => {
         show={props.show}
         onCancel={cancelHandler}
       >
-        <form onSubmit={userUpdateSubmitHandler}>
-          <Input
-            id="email"
-            element="input"
-            type="text"
-            label="Email"
-            //errorText="please enter a valid email"
-            validators={[VALIDATOR_EMAIL()]}
-            onInput={inputhandler}
-          />
-          <Input
-            id="password"
-            element="input"
-            type="password"
-            label="Password"
-            //errorText="Your password must be at least 8characteres"
-            validators={[VALIDATOR_MINLENGTH(1)]}
-            onInput={inputhandler}
-          />
+        <form
+          onSubmit={!props.change ? userUpdateSubmitHandler : changehandlersend}
+        >
+          {!props.change && (
+            <Input
+              prop
+              id="email"
+              element="input"
+              type="text"
+              label="Email"
+              //errorText="please enter a valid email"
+              validators={[VALIDATOR_EMAIL()]}
+              onInput={inputhandler}
+            />
+          )}
+          {!props.change && (
+            <Input
+              id="password"
+              element="input"
+              type="password"
+              label="Password"
+              //errorText="Your password must be at least 8characteres"
+              validators={[VALIDATOR_MINLENGTH(8)]}
+              onInput={inputhandler}
+            />
+          )}
           {!isLoginMode && (
             <Input
               id="name"
               element="input"
               type="text"
               label="Nom"
-              //errorText="please enter a valid name"
+              initialvalid
               validators={[VALIDATOR_REQUIRE()]}
               onInput={inputhandler}
+              initialvalue={`${props.change ? props.user.name : ""}`}
             />
           )}
           {!isLoginMode && (
@@ -229,9 +290,11 @@ const Auth = (props) => {
               id="firstName"
               element="input"
               type="text"
+              initialvalid
               label="Prenom"
               validators={[VALIDATOR_REQUIRE()]}
               onInput={inputhandler}
+              initialvalue={`${props.change ? props.user.firstname : ""}`}
             />
           )}
 
@@ -244,6 +307,7 @@ const Auth = (props) => {
               onInput={inputhandler}
               initialvalid
               explication
+              initialvalue={`${props.change ? props.user.image : ""}`}
               onClickexplication={() =>
                 explicationHandler(
                   "GatsunWeb doesn't accept directy file for the moment. Please give a link"
@@ -261,6 +325,7 @@ const Auth = (props) => {
               borderRadius="16px"
               onInput={inputhandler}
               explication
+              initialvalue={`${props.change ? props.user.bio : ""}`}
               onClickexplication={() =>
                 explicationHandler("Your bio describe yourself in a few word")
               }
@@ -312,6 +377,7 @@ const Auth = (props) => {
                         style={{ width: "150px" }}
                         value={myval}
                         onChange={changevalhandler}
+                        initialvalid
                       />
                       <div className="validate" onClick={validateHandle}>
                         <div className="croxsp" />
@@ -352,24 +418,34 @@ const Auth = (props) => {
               </div>
             </div>
           )}
+
           <Button
             type="submit"
-            disabled={!authState.isValid}
+            //disabled={!authState.isValid}
             height="56px"
-            text={!isLoginMode ? "Signup" : "Login"}
+            text={
+              !isLoginMode
+                ? !props.change
+                  ? "Signup"
+                  : "Apply Change"
+                : "Login"
+            }
             fontsize="30px"
             borderradius="22px"
+            width="100%"
             topmargin={`${isLoginMode ? "50px" : ""}`}
             orange
           />
         </form>
-        <Button
-          onClick={switchModeHandler}
-          height="39px"
-          text={`Switch to ${isLoginMode ? "Signup" : "Login"}`}
-          fontsize="15px"
-          borderradius="22px"
-        />
+        {!props.change && (
+          <Button
+            onClick={switchModeHandler}
+            height="39px"
+            text={`Switch to ${isLoginMode ? "Signup" : "Login"}`}
+            fontsize="15px"
+            borderradius="22px"
+          />
+        )}
         {errorText && (
           <div className="errorText">
             <p>{errorText}</p>

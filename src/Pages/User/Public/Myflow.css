@@ -1,63 +1,21 @@
-.user {
-  display: flex;
-  margin: 50px 0px 0px 0px;
-  flex-direction: column;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  align-items: center;
-  width: 80%;
-  max-width: 400px;
-  min-width: 300px;
-  border-radius: 50px;
-  background: #f19b45;
-  box-shadow: inset 20px 20px 60px #cd843b, inset -20px -20px 60px #ffb24f;
-}
-.changeparam {
-  display: flex;
-  align-items: center;
-}
 .Page_User {
   margin-top: 12vh;
-  width: 100vw;
+  padding-top: 43px;
+  position: relative;
+}
+.profillike {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
-.user__info p:first-child {
-  text-align: left;
+.IconContainerProf {
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
 }
-.user__info {
-  text-align: center;
-  margin-top: 50px;
-  max-width: 300px;
-  width: 90%;
-  overflow-wrap: break-word;
-}
-.user__name {
-  display: grid;
-  grid-template-columns: 70px auto 40px;
-  align-items: center;
-}
-.user__name img {
-  align-items: center;
-}
-
-.user__email {
-  display: grid;
-  grid-template-columns: 90px auto 40px;
-  align-items: center;
-}
-
-.user__bio p {
-  text-align: center !important;
-}
-.changeparamBio {
-  overflow: hidden;
-  border-radius: 5px;
-}
-
-.form {
-  margin: 1rem 0;
+.end {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
 }
 
 button {
@@ -68,32 +26,9 @@ button {
   text-decoration: none;
   color: black;
 }
-.likes {
-  border: 2px solid rgba(255, 255, 255, 0.24);
-  padding-right: 5px;
-  padding-left: 5px;
-  margin: 5px;
-  border-radius: 50px;
-  background: #f0f0f0;
-  box-shadow: 2px 2px 4px #d99e63, -2px -2px 4px #ffd687;
+.privating {
+  -webkit-text-security: disc;
 }
-.user__likes {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.other {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  height: 050px;
-  margin: 20px;
-  width: 50%;
-  max-width: 400px;
-}
-.other img {
-  height: 50px;
-}
-.addlike img {
-  width: 15px;
+.value2 {
+  margin-left: 30px;
 }

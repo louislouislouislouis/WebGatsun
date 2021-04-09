@@ -8,9 +8,7 @@ const OneConv = (props) => {
   return (
     <div className="conv">
       <div className="icon1">
-        {props.with.map((image) => {
-          return <Avatar image={image} width={"50px"} key={image}></Avatar>;
-        })}
+        <Avatar image={props.with} width={"50px"} key={props.with}></Avatar>;
       </div>
     </div>
   );

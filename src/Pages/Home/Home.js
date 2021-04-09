@@ -15,6 +15,7 @@ import demandsvg from "../../File/svg/demande.svg";
 import msgsvg from "../../File/svg/msg.svg";
 import disconnectsvg from "../../File/svg/disconnect.svg";
 import profilsvg from "../../File/svg/profile.svg";
+import adminsvg from "../../File/svg/admin.svg";
 
 const Home = () => {
   const [showauth, setshowauth] = useState(false);
@@ -127,7 +128,7 @@ const Home = () => {
             />
             <IconSvg
               src={disconnectsvg}
-              alt={"connect"}
+              alt={"disconnect"}
               width="100px"
               text="Disconnect"
               borderRadius="33px"
@@ -135,6 +136,17 @@ const Home = () => {
               onClick={auth.logout}
             />
           </div>
+          {user.role === "bureau" && (
+            <IconSvg
+              src={adminsvg}
+              alt={"admin"}
+              width="100px"
+              text="Admin"
+              borderRadius="33px"
+              className="connectedIndividualIcon"
+              onClick={auth.logout}
+            />
+          )}
         </React.Fragment>
       )}
     </div>

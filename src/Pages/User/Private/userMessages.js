@@ -133,13 +133,9 @@ const UserMessages = () => {
         Authorization: "Bearer " + auth.token,
       }
     );
-    //GET THE MESSAGE YOU JUST SENT
     lasendReq();
-    //TELL THE SERVER TO AVERT YOUR PARTNER
     sendlivreq();
-    //CLEAR THE FORM
     setonclear(true);
-    //RESET THE CLEARMODE AFTER
     setTimeout(() => setonclear(false), 200);
   };
 
@@ -160,7 +156,7 @@ const UserMessages = () => {
         <div className="User__message__page">
           {myconv && (
             <div className="user_conv">
-              <div className="user_conv_info">
+              {/*  <div className="user_conv_info">
                 {myconv.image.map((part) => {
                   return (
                     <div key={part} className="participants">
@@ -168,7 +164,7 @@ const UserMessages = () => {
                     </div>
                   );
                 })}
-              </div>
+              </div> */}
               <div className="message" ref={msgRef}>
                 {myconv.messages.map((index) => {
                   return (

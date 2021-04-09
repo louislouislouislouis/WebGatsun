@@ -23,7 +23,7 @@ import NewDemand from "./Pages/Demand/NewDemand";
 //import Waitings from "./Components/Shared/Waitings";
 
 function App() {
-  const { token, login, logout, UserId } = useAuth();
+  const { token, login, logout, UserId, UserImg } = useAuth();
   let routes;
 
   if (token) {
@@ -91,6 +91,7 @@ function App() {
         login: login,
         logout: logout,
         userId: UserId,
+        UserImg: UserImg,
       }}
     >
       <Router>

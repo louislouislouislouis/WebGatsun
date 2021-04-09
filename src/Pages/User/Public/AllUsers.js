@@ -25,16 +25,28 @@ const Users = () => {
   useEffect(() => {
     const sendReq = async () => {
       try {
-        const convsresponse = await sendRequest(
-          `http://localhost:5000/api/user/alluser`
-        );
-        if (convsresponse) {
-          setallusers(convsresponse.users);
+        if (!auth.token) {
+          const convsresponse = await sendRequest(
+            `http://localhost:5000/api/user/alluser`
+          );
+          if (convsresponse) {
+            setallusers(convsresponse.users);
+          }
+        } else {
+          const convsresponse = await sendRequest(
+            `http://localhost:5000/api/user/alluser/right`,
+            "GET",
+            null,
+            { Authorization: "Bearer " + auth.token }
+          );
+          if (convsresponse) {
+            setallusers(convsresponse.users);
+          }
         }
       } catch (err) {}
     };
     sendReq();
-  }, [sendRequest]);
+  }, [sendRequest, auth.token]);
 
   //HANDLER SHOW USER USER PROPS
   const showuserpropsHandler = (usr) => {
@@ -48,7 +60,6 @@ const Users = () => {
   };
   //CONVHANDLER
   const ConvHandler = async (e) => {
-    e.preventDefault();
     try {
       const response = await sendRequest(
         `http://localhost:5000/api/conv/exist`,
