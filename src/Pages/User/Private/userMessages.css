@@ -1,6 +1,5 @@
 .User__message__page p {
   margin: 5px;
-  margin-top: 12vh;
 }
 .user_conv_info {
   display: flex;
@@ -11,7 +10,7 @@
   margin: 5px;
 }
 .message {
-  height: 70vh;
+  max-height: 70vh;
   width: 90%;
   margin: auto;
   max-width: 400px;
@@ -26,9 +25,10 @@
   justify-content: flex-end;
 }
 .mymsg__content p {
-  background-color: bisque;
-  border-radius: 320px;
+  background-color: white;
+  border-radius: 26px 26px 0px 26px;
   padding: 10px;
+  font-weight: 100;
 }
 .othermsg__content {
   display: flex;
@@ -36,19 +36,42 @@
   justify-content: flex-start;
 }
 .othermsg__content p {
-  background-color: rgb(255, 173, 74);
-  border-radius: 40px;
+  background-color: #ffe3ce;
+  border-radius: 26px 26px 26px 0px;
   padding: 10px;
 }
 .send {
+  position: absolute;
+  margin: 0 auto 0 auto;
+  bottom: 30px;
+  width: 890%;
   max-width: 400px;
-  width: 90%;
-  margin: auto;
+
   display: grid;
-  grid-template-columns: auto 100px;
+  grid-template-columns: auto 100px 30px;
   align-items: center;
 }
 .actions {
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+.User__message__page {
+  margin-top: 12vh;
+  padding-top: 5px;
+}
+.actions img {
+  width: 30px;
+}
+.send .form-control {
+  margin-bottom: 0px;
+}
+.send button {
+  margin: 0px 20px 0px 20px;
+  border-radius: 40px;
+  width: 50px;
+}
+.endpage {
   display: flex;
   justify-content: center;
 }

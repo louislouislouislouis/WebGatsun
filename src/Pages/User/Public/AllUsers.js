@@ -9,6 +9,7 @@ import Modal from "../../../Components/Shared/Modal";
 import "./AllUsers.css";
 import ErrorModal from "../../../Components/Shared/ErrorModal";
 import Waitings from "../../../Components/Shared/Waitings";
+import Button from "../../../Components/Shared/Button";
 
 const Users = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -77,7 +78,7 @@ const Users = () => {
       history.push(`/conv/${response.idconv}`);
     } catch (err) {}
   };
-
+  console.log(UserHighlight);
   //GOPROFIL
   const goprofileHandler = () => {
     history.push(`/${UserHighlight.id}/profil`);
@@ -91,60 +92,102 @@ const Users = () => {
         onClearAction={clearError}
         action="Go back"
       ></ErrorModal>
-      {isLoading && <Waitings />}
-      {!isLoading && (
-        <React.Fragment>
-          <Modal
-            show={showUserProp}
-            onCancel={hideuserpropsHandler}
-            header={`${
-              UserHighlight
-                ? `${UserHighlight.firstname} ${UserHighlight.name}`
-                : ""
-            }`}
-            footer={
-              <React.Fragment>
-                <button onClick={hideuserpropsHandler}> Quit</button>
-                {auth.token &&
-                  UserHighlight &&
-                  UserHighlight.id !== auth.userId && (
-                    <button onClick={ConvHandler}> Conv</button>
-                  )}
-                <button onClick={goprofileHandler}> See profile</button>
-              </React.Fragment>
-            }
-          >
-            {
-              <React.Fragment>
-                <Avatar
-                  image={UserHighlight ? UserHighlight.image : ""}
-                  alt={UserHighlight ? UserHighlight.name : ""}
-                  width={"200px"}
-                ></Avatar>
-                <div className="bio">
-                  <p>{UserHighlight ? UserHighlight.bio : ""}</p>
+
+      <React.Fragment>
+        <Modal show={showUserProp} onCancel={hideuserpropsHandler} top={"12vh"}>
+          {
+            <React.Fragment>
+              <Avatar
+                image={UserHighlight ? UserHighlight.image : ""}
+                alt={UserHighlight ? UserHighlight.name : ""}
+                width={"200px"}
+              ></Avatar>
+              {UserHighlight && (
+                <h1
+                  className={"titlename"}
+                >{`${UserHighlight.firstname} ${UserHighlight.name}`}</h1>
+              )}
+              <div className="bio">
+                <p>{UserHighlight ? UserHighlight.bio : ""}</p>
+              </div>
+              <div className="profillike">
+                {UserHighlight &&
+                  UserHighlight.likes.map((like) => {
+                    return (
+                      <Button
+                        key={like}
+                        text={like}
+                        borderradius="22px"
+                        nonbutton
+                        fontweight="medium"
+                        margin="5px"
+                        fontsize="20px"
+                        marginText="8px"
+                      />
+                    );
+                  })}
+              </div>
+              <div
+                className="actionfocus"
+                onClick={goprofileHandler}
+                style={{ marginTop: "30px" }}
+              >
+                <p>See profile</p>
+              </div>
+              {UserHighlight && UserHighlight.id !== auth.userId && (
+                <div className="actionfocus" onClick={ConvHandler}>
+                  <p>Start conv</p>
                 </div>
-              </React.Fragment>
-            }
-          </Modal>
+              )}
+              <div className="actionfocus" onClick={hideuserpropsHandler}>
+                <p>Quit</p>
+              </div>
+            </React.Fragment>
+          }
+        </Modal>
+        <div className="alluserpage">
+          <h1>All Users</h1>
+          {isLoading && <Waitings />}
           {allusers &&
             allusers.map((usr) => {
               return (
-                <div key={usr.id}>
-                  <div className="name">
-                    <p>{`${usr.firstname} ${usr.name}`}</p>
+                <Button
+                  height="112px"
+                  orange
+                  width="400px"
+                  borderradius="38px"
+                  maxWidth="90vw"
+                  onClick={() => showuserpropsHandler(usr)}
+                >
+                  <div className="contentConve">
+                    <Avatar
+                      image={usr.image}
+                      alt={usr.image}
+                      width={"75px"}
+                      widthpopa={"90px"}
+                      position="absolute"
+                      left="5px"
+                      border="0px"
+                    />
+                    <h1
+                      style={{
+                        position: "absolute",
+                        left: "100px",
+                        textShadow: "0px 3px 6px rgba(0,0,0,0.16)",
+                      }}
+                    >
+                      {usr.firstname ? (
+                        `${usr.firstname} ${usr.name}`
+                      ) : (
+                        <Waitings little />
+                      )}
+                    </h1>
                   </div>
-                  <Avatar
-                    image={usr.image}
-                    alt={usr.id}
-                    width="100px"
-                    onClick={() => showuserpropsHandler(usr)}
-                  ></Avatar>
-                </div>
+                </Button>
               );
             })}
-        </React.Fragment>
-      )}
+        </div>
+      </React.Fragment>
     </React.Fragment>
   );
 };

@@ -29,7 +29,7 @@ const UserMessages = () => {
 
   const [onclear, setonclear] = useState(false);
   const [myconv, setrconv] = useState();
-
+  const [otheruser, setotheruser] = useState(null);
   const convId = useParams().convId;
 
   //SOURCELIVE EXIST OVER RENDER
@@ -88,6 +88,7 @@ const UserMessages = () => {
   //RECUPERER CONV AU CHARGMEENT DE LA PAGE
   useEffect(() => {
     const sendReq = async () => {
+      let larep;
       try {
         const response = await sendRequest(
           `http://localhost:5000/api/conv/${convId}`,
@@ -95,7 +96,22 @@ const UserMessages = () => {
           null,
           { Authorization: "bearer " + auth.token }
         );
+
+        larep = response;
         setrconv(response);
+      } catch (err) {}
+      try {
+        const otheruse = larep.participants.filter((part) => {
+          return part !== auth.userId;
+        });
+        const response = await sendRequest(
+          `http://localhost:5000/api/user/${otheruse[0]}`,
+          "GET",
+          null,
+          { Authorization: "bearer " + auth.token }
+        );
+
+        setotheruser(response);
       } catch (err) {}
     };
     sendReq();
@@ -115,9 +131,7 @@ const UserMessages = () => {
 
   //POUR AVOIR UN ECRAN EN BAS AU RECHARGEMENT ET A L'ARRIVEE SUR LA PAGE
   useEffect(() => {
-    if (myconv) {
-      msgRef.current.scrollTop = msgRef.current.scrollHeight;
-    }
+    msgRef.current.scrollTop = msgRef.current.scrollHeight;
   }, [myconv]);
 
   const userUpdateSubmitHandler = async (e) => {
@@ -143,6 +157,7 @@ const UserMessages = () => {
   const LinktoHome = () => {
     history.push("/");
   };
+
   return (
     <React.Fragment>
       <ErrorModal
@@ -151,12 +166,22 @@ const UserMessages = () => {
         onClearAction={LinktoHome}
         action="Go Home"
       ></ErrorModal>
-      {isLoading && <Waitings></Waitings>}
-      {!isLoading && (
-        <div className="User__message__page">
-          {myconv && (
-            <div className="user_conv">
-              {/*  <div className="user_conv_info">
+
+      <div className="User__message__page">
+        {otheruser && (
+          <Avatar
+            border="solid 5px white"
+            width="78px"
+            image={otheruser.image}
+          ></Avatar>
+        )}
+        {otheruser && (
+          <h1
+            style={{ textAlign: "center" }}
+          >{`${otheruser.firstname} ${otheruser.firstname}`}</h1>
+        )}
+        <div className="user_conv">
+          {/*  <div className="user_conv_info">
                 {myconv.image.map((part) => {
                   return (
                     <div key={part} className="participants">
@@ -165,49 +190,55 @@ const UserMessages = () => {
                   );
                 })}
               </div> */}
-              <div className="message" ref={msgRef}>
-                {myconv.messages.map((index) => {
-                  return (
+          {isLoading && <Waitings little pos="absolute" />}
+          <div
+            className="message"
+            style={{ height: 0.6 * window.innerHeight }}
+            ref={msgRef}
+          >
+            {myconv &&
+              myconv.messages.map((index) => {
+                return (
+                  <div
+                    className={`${
+                      auth.userId === index.from ? "my" : "other"
+                    }msg`}
+                    key={index.date + index.from}
+                  >
                     <div
                       className={`${
                         auth.userId === index.from ? "my" : "other"
-                      }msg`}
-                      key={index.date + index.from}
+                      }msg__content`}
                     >
-                      <div
-                        className={`${
-                          auth.userId === index.from ? "my" : "other"
-                        }msg__content`}
-                      >
-                        <p>{index.body}</p>
-                      </div>
+                      <p>{index.body}</p>
                     </div>
-                  );
-                })}
-              </div>
-              <form className="send" onSubmit={userUpdateSubmitHandler}>
-                {MsgState.inputs.body && (
-                  <Input
-                    id="body"
-                    element="input"
-                    type="text"
-                    validators={[VALIDATOR_REQUIRE()]}
-                    onInput={inputhandler}
-                    initialvalue=""
-                    onclear={onclear}
-                  />
-                )}
-                <button type="submit" disabled={!MsgState.isValid}>
-                  Envoyer
-                </button>
-              </form>
-            </div>
-          )}
-          <NavLink className="actions" to={`/${auth.userId}/conv`}>
-            <img src={backimg} alt="retour"></img>
-          </NavLink>
+                  </div>
+                );
+              })}
+          </div>
+          <div className="endpage">
+            <form className="send" onSubmit={userUpdateSubmitHandler}>
+              {MsgState.inputs.body && (
+                <Input
+                  id="body"
+                  element="input"
+                  type="text"
+                  validators={[VALIDATOR_REQUIRE()]}
+                  onInput={inputhandler}
+                  initialvalue=""
+                  onclear={onclear}
+                />
+              )}
+              <button type="submit" disabled={!MsgState.isValid}>
+                Send
+              </button>
+              <NavLink className="actions" to={`/${auth.userId}/conv`}>
+                <img src={backimg} alt="retour"></img>
+              </NavLink>
+            </form>
+          </div>
         </div>
-      )}
+      </div>
     </React.Fragment>
   );
 };

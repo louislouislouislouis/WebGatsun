@@ -11,6 +11,7 @@ const Button = (props) => {
             borderRadius: props.borderradius,
             marginTop: props.topmargin,
             width: props.width,
+            maxWidth: props.maxWidth,
             background: props.orange
               ? "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,206,161,1) 100%)"
               : "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,192,161,1) 100%)",
@@ -34,6 +35,7 @@ const Button = (props) => {
             borderRadius: props.borderradius,
             marginTop: props.topmargin,
             margin: props.margin,
+            maxWidth: props.maxWidth,
             background: props.orange
               ? "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,206,161,1) 100%)"
               : "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,192,161,1) 100%)",

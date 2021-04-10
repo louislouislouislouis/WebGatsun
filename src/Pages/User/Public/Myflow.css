@@ -6,6 +6,7 @@
 .profillike {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .IconContainerProf {
   padding-top: 80px;

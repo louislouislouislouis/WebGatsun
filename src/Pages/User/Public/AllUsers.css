@@ -8,3 +8,30 @@
 .name {
   text-align: center;
 }
+.alluserpage {
+  margin-top: 12vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.actionfocus {
+  margin: 10px auto 10px auto;
+  background-color: white;
+  border-radius: 50px;
+  padding: 0 10px 0 10px;
+  text-align: center;
+  box-shadow: 3px 5px 6px rgb(0 0 0 / 16%);
+}
+.actionfocus p {
+  margin: 10px auto 10px auto;
+  background-color: white;
+  border-radius: 50px;
+  padding: 0 10px 0 10px;
+}
+.actionfocus:first-of-type {
+  background-color: aliceblue;
+}
+.titlename {
+  text-align: center;
+}
