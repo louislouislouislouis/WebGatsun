@@ -2,14 +2,14 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory, NavLink, useParams } from "react-router-dom";
 
 import { useHttpClient } from "../../../Hooks/http-hook";
-
 import { AuthContext } from "../../../Context/auth-context";
 
-import "./Conv.css";
 import Waitings from "../../../Components/Shared/Waitings";
 import ErrorModal from "../../../Components/Shared/ErrorModal";
 import Button from "../../../Components/Shared/Button";
 import Avatar from "../../../Components/Shared/Avatar";
+
+import "./Conv.css";
 
 const Conv = (props) => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();

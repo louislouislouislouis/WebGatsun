@@ -115,7 +115,7 @@ const UserMessages = () => {
       } catch (err) {}
     };
     sendReq();
-  }, [convId, sendRequest, auth.token]);
+  }, [convId, sendRequest, auth]);
 
   //SE CONNECTER AU LIVE ET ETRE A L'AFFUT DES MESSAGES
   useEffect(() => {

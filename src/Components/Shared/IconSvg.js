@@ -17,6 +17,7 @@ const IconSvg = (props) => {
               }}
             ></img>
             <p>{props.text}</p>
+            {props.text2 && <p>{props.text2}</p>}
           </div>
         </NavLink>
       )}

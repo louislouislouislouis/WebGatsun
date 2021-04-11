@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 
 import "./Waitings.css";
 import Lottie from "react-lottie";

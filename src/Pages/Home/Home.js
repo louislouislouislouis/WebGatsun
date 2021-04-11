@@ -149,6 +149,10 @@ const Home = () => {
           )}
         </React.Fragment>
       )}
+      <div className="askingdate">
+        <h2>Heure de réservation</h2>
+        <input type="date" className="demandinput" />
+      </div>
     </div>
   );
 };

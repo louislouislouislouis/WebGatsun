@@ -68,6 +68,9 @@ function App() {
         <Route path="/conv/:convId" exact={true}>
           <NoRight />
         </Route>
+        <Route path="/demand" exact={true}>
+          <NoRight />
+        </Route>
         <Route path="/:userId/conv" exact={true}>
           <NoRight />
         </Route>
@@ -82,7 +85,7 @@ function App() {
       </Switch>
     );
   }
-
+  console.log(routes);
   return (
     <AuthContext.Provider
       value={{
