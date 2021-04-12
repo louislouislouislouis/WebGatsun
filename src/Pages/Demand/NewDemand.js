@@ -2,19 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import Calendar from "react-calendar";
 import { AuthContext } from "../../Context/auth-context";
 import { useHttpClient } from "../../Hooks/http-hook";
-import "./NewDemand.css";
-import ErrorModal from "../../Components/Shared/ErrorModal";
 
+import "./NewDemand.css";
+
+import ErrorModal from "../../Components/Shared/ErrorModal";
 import Modal from "../../Components/Shared/Modal";
-import Input from "../../Components/Shared/Input";
-import { useForm } from "../../Hooks/form-hook";
-import {
-  VALIDATOR_EMAIL,
-  VALIDATOR_MINLENGTH,
-  VALIDATOR_REQUIRE,
-} from "../../util/validators";
 import Button from "../../Components/Shared/Button";
 import Confimationmodal from "../../Components/Shared/Confimationmodal";
+
 const DUMMYOCCUPATION = [
   {
     datebegin: new Date("April 11, 2021 23:00:00"),
@@ -199,7 +194,7 @@ const NewDemand = (props) => {
   const longtimevalueHandler = (e) => {
     if (parseInt(e.target.value)) {
       setlongtime(Math.min(parseInt(e.target.value), maxh));
-    } else if (e.target.value == "") {
+    } else if (e.target.value === "") {
       setlongtime("");
     }
   };
@@ -282,7 +277,7 @@ const NewDemand = (props) => {
     console.log(JSON.stringify(tosend));
 
     try {
-      const response = await sendRequest(
+      await sendRequest(
         `http://localhost:5000/api/demand/new`,
         "POST",
         JSON.stringify(tosend),
@@ -319,6 +314,7 @@ const NewDemand = (props) => {
           onCancel={modeconfhandler}
           onClick={success ? modeconfhandler : hndlesubmit}
           show={confirmationmode}
+          isLoading={isLoading}
         />
       }
       <Modal

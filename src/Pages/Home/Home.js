@@ -136,7 +136,9 @@ const Home = () => {
               onClick={auth.logout}
             />
           </div>
-          {user.role === "bureau" && (
+          {(user.role === "bureau" ||
+            user.role === "responsable" ||
+            user.role === "Master") && (
             <IconSvg
               src={adminsvg}
               alt={"admin"}
@@ -144,15 +146,11 @@ const Home = () => {
               text="Admin"
               borderRadius="33px"
               className="connectedIndividualIcon"
-              onClick={auth.logout}
+              link={`/${auth.userId}/admin`}
             />
           )}
         </React.Fragment>
       )}
-      <div className="askingdate">
-        <h2>Heure de réservation</h2>
-        <input type="date" className="demandinput" />
-      </div>
     </div>
   );
 };

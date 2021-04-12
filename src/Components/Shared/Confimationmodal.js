@@ -6,6 +6,7 @@ import { CSSTransition } from "react-transition-group";
 
 import "./Confimationmodal.css";
 import Button from "./Button";
+import Waitings from "./Waitings";
 const Confimationmodal = (props) => {
   const content = (
     <React.Fragment>
@@ -28,6 +29,7 @@ const Confimationmodal = (props) => {
           {props.type === "Success" && <h1>Succès</h1>}
           {props.type === "Avert" && <h1>Attention</h1>}
           <p>{props.text}</p>
+          {props.isLoading && <Waitings width="200px" />}
           <Button
             height="56px"
             text={props.type === "Success" ? "Ok!" : "Je confirme la demande"}

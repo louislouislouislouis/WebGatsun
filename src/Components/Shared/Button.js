@@ -16,6 +16,8 @@ const Button = (props) => {
             background: props.orange
               ? "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,206,161,1) 100%)"
               : "linear-gradient(180deg, rgba(254,240,225,1) 0%, rgba(251,192,161,1) 100%)",
+            bottom: props.bottom,
+            position: props.position,
           }}
           type={props.type}
           disabled={props.disabled}

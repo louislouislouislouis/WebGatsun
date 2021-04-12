@@ -128,8 +128,8 @@ const Profil = () => {
             </div>
             <div className="IconContainerProf">
               <IconSvg
-                link="/demand"
-                src={demandsvg}
+                link="/"
+                src={postsvg}
                 alt={"connect"}
                 width="100px"
                 borderRadius="33px"

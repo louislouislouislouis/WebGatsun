@@ -28,7 +28,15 @@ const Waitings = (props) => {
   const content = (
     <React.Fragment>
       {props.backdrop && <Backdrop onClick={props.onClick} />}
-      <div className="Attente" style={{ position: props.pos }}>
+      <div
+        className="Attente"
+        style={{
+          position: props.pos,
+          left: props.left,
+          transform: props.transform,
+          bottom: props.bottom,
+        }}
+      >
         <Lottie
           options={defaultOptions}
           height={props.height}

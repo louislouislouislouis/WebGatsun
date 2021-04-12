@@ -19,6 +19,7 @@ import Auth from "./Pages/Auth/Auth";
 import NoRight from "./Pages/User/Public/NoRight";
 import Demand from "./Pages/Demand/Demand";
 import NewDemand from "./Pages/Demand/NewDemand";
+import Admin from "./Pages/Admin/Admin";
 
 //import Waitings from "./Components/Shared/Waitings";
 
@@ -53,6 +54,9 @@ function App() {
         <Route path="/auth" exact={true}>
           <Auth show={true} />
         </Route>
+        <Route path="/:userId/admin" exact={true}>
+          <Admin />
+        </Route>
         <Redirect to="/" />
       </Switch>
     );
@@ -80,12 +84,14 @@ function App() {
         <Route path="/:userId/profil" exact={true}>
           <Profil />
         </Route>
+        <Route path="/:userId/admin" exact={true}>
+          <NoRight />
+        </Route>
 
         <Redirect to="/" />
       </Switch>
     );
   }
-  console.log(routes);
   return (
     <AuthContext.Provider
       value={{
