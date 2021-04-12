@@ -34,7 +34,10 @@ const ModamOverlay = (props) => {
           props.onSubmit ? props.onSubmit : (event) => event.preventDefault()
         }
       > */}
-        <div className={`modal__content ${props.contentClass}`}>
+        <div
+          style={{ overflow: props.overflow }}
+          className={`modal__content ${props.contentClass}`}
+        >
           {props.children}
         </div>
         {props.footer && (

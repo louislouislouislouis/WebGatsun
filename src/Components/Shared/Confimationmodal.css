@@ -1,0 +1,24 @@
+.confimationmodal {
+  z-index: 102;
+  position: absolute;
+  display: flex;
+  margin: 0 auto 0 auto;
+  flex-direction: column;
+  width: 90%;
+  max-width: 342px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0px 3px 6px rgb(0 0 0 / 26%);
+  border-radius: 69px;
+  padding: 30px;
+  overflow: visible;
+}
+.cfback {
+  z-index: 101;
+}
+#confirmation-hook {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 50vh;
+}

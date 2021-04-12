@@ -209,7 +209,7 @@ const Demand = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   const [histomodecomplet, sethistomodecomplet] = useState(false);
-  const [prev, setprev] = useState();
+  const [prev, setprev] = useState([]);
   useEffect(() => {
     setprev(MYDUMMYDEMAND.slice(0, 3));
   }, []);

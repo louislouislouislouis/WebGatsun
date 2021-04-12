@@ -10,6 +10,7 @@ const Button = (props) => {
             fontSize: props.fontsize,
             borderRadius: props.borderradius,
             marginTop: props.topmargin,
+            marginBottom: props.marginbottom,
             width: props.width,
             maxWidth: props.maxWidth,
             background: props.orange
