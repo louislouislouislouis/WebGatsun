@@ -22,3 +22,7 @@
   position: relative;
   top: 50vh;
 }
+.confimationmodal .demandinput {
+  height: auto;
+  resize: none;
+}

@@ -136,7 +136,6 @@ const NewDemand = (props) => {
               senderfeedback = "";
             }
           } else if (occup.dateend.getDate() === value.getDate()) {
-            console.log(occup.dateend.getHours());
             senderfeedback +=
               "00:00 to " +
               (occup.dateend.getHours() < 10
@@ -247,7 +246,6 @@ const NewDemand = (props) => {
 
   //changemsg
   const changemessagehandler = (e) => {
-    console.log("ddd");
     setmessage(e.target.value);
   };
   //changemodepaiment
@@ -257,11 +255,11 @@ const NewDemand = (props) => {
   };
   const hndlesubmit = async (e) => {
     const hourwanted = parseInt(timevalue.substring(0, 2));
-    console.log(hourwanted);
+    //console.log(hourwanted);
 
     let datebeginning = new Date(value);
     datebeginning.setHours(hourwanted);
-    console.log(datebeginning);
+    //console.log(datebeginning);
 
     let enddate = new Date(datebeginning);
     enddate.setHours(enddate.getHours() + longtime);
@@ -273,8 +271,8 @@ const NewDemand = (props) => {
       message: message,
       paymentmethod: paymentmethod === "Liquide" ? "cash" : "cb",
     };
-    console.log(tosend);
-    console.log(JSON.stringify(tosend));
+    //console.log(tosend);
+    //console.log(JSON.stringify(tosend));
 
     try {
       await sendRequest(
@@ -286,13 +284,16 @@ const NewDemand = (props) => {
           Authorization: "Bearer " + auth.token,
         }
       );
-      setsucess(true);
+      setsucess(false);
+      setconfirmationmode(false);
+      setmessage("");
       props.onCancel();
     } catch (err) {}
   };
   const modeconfhandler = () => {
     setconfirmationmode((p) => !p);
   };
+
   return (
     <React.Fragment>
       <ErrorModal
@@ -301,22 +302,20 @@ const NewDemand = (props) => {
         onClearAction={clearError}
         action="Go Home"
       ></ErrorModal>
-      {
-        <Confimationmodal
-          type={success ? "Success" : "Avert"}
-          text={
-            !success
-              ? `Vous êtes sur le point de demander une réservation du studio pour le ${DatetoStringMinemethod(
-                  value
-                )} à ${timevalue}H pour une durée de ${longtime}H. Le paiement se fera en ${paymentmethod}`
-              : "Votre confirmation a été réservé. Vous allez être contactez par mail sous peu"
-          }
-          onCancel={modeconfhandler}
-          onClick={success ? modeconfhandler : hndlesubmit}
-          show={confirmationmode}
-          isLoading={isLoading}
-        />
-      }
+      <Confimationmodal
+        type={success ? "Success" : "Avert"}
+        text={
+          !success
+            ? `Vous êtes sur le point de demander une réservation du studio pour le ${DatetoStringMinemethod(
+                value
+              )} à ${timevalue}H pour une durée de ${longtime}H. Le paiement se fera en ${paymentmethod}`
+            : "Votre confirmation a été réservé. Vous allez être contactez par mail sous peu"
+        }
+        onCancel={modeconfhandler}
+        onClick={success ? modeconfhandler : hndlesubmit}
+        show={confirmationmode}
+        isLoading={isLoading}
+      />
       <Modal
         height={`${window.innerHeight - 100}px`}
         top="50px"

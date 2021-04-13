@@ -150,7 +150,7 @@ const Profil = () => {
               {userId === auth.userId && (
                 <IconSvg
                   link="/demand"
-                  src={postsvg}
+                  src={demandsvg}
                   alt={"connect"}
                   width="100px"
                   borderRadius="33px"

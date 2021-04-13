@@ -36,6 +36,12 @@ const Demand = () => {
           null,
           { Authorization: "bearer " + auth.token }
         );
+        response.demanduser.sort((a, b) => {
+          return (
+            new Date(b.askingDate).getTime() - new Date(a.askingDate).getTime()
+          );
+        });
+
         setalldemand(response.demanduser);
       } catch (err) {}
     };
@@ -58,7 +64,7 @@ const Demand = () => {
 
   //Show infos
   const explichandler = (e) => {
-    console.log(e);
+    //console.log(e);
     setfocus(e);
     setfocusmode(true);
   };
@@ -118,16 +124,33 @@ const Demand = () => {
           <p
             style={{
               color:
-                focus.status === "Waiting for validation" ? "orange" : "black",
+                focus.status === "Waiting for validation" ||
+                focus.status === "En attente de paiment"
+                  ? "orange"
+                  : focus.status === "Refusé"
+                  ? "red"
+                  : "black",
             }}
           >
             {focus.status}
           </p>
         </div>
         {focus.feedback && (
-          <div className="demandId">
-            <h1>Demand Id</h1>
-            <p>{focus._id}</p>
+          <div className="feedback">
+            <h1>Feedback</h1>
+            <p>{focus.feedback}</p>
+          </div>
+        )}
+        {focus.feedbackdate && (
+          <div className="feedbackdate">
+            <h1>Date de retour</h1>
+            <p>{DatetoStringMinemethod(new Date(focus.feedbackdate))}</p>
+          </div>
+        )}
+        {focus.dateofclose && (
+          <div className="closedate">
+            <h1>Fermetture de dossier</h1>
+            <p>{DatetoStringMinemethod(new Date(focus.dateofclose))}</p>
           </div>
         )}
         <Button
@@ -201,8 +224,11 @@ const Demand = () => {
                     className="status"
                     style={{
                       color:
-                        demand.status === "Waiting for validation"
+                        demand.status === "Waiting for validation" ||
+                        demand.status === "En attente de paiment"
                           ? "orange"
+                          : demand.status === "Refusé"
+                          ? "red"
                           : "black",
                     }}
                   >
@@ -230,8 +256,11 @@ const Demand = () => {
                     <p
                       style={{
                         color:
-                          demand.status === "Waiting for validation"
+                          demand.status === "Waiting for validation" ||
+                          demand.status === "En attente de paiment"
                             ? "orange"
+                            : demand.status === "Refusé"
+                            ? "red"
                             : "black",
                       }}
                     >
