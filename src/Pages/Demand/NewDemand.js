@@ -10,29 +10,8 @@ import Modal from "../../Components/Shared/Modal";
 import Button from "../../Components/Shared/Button";
 import Confimationmodal from "../../Components/Shared/Confimationmodal";
 
-const DUMMYOCCUPATION = [
-  {
-    datebegin: new Date("April 11, 2021 23:00:00"),
-    dateend: new Date("April 12, 2021 00:00:00"),
-  },
-  {
-    datebegin: new Date("April 12, 2021 19:00:00"),
-    dateend: new Date("April 12, 2021 21:00:00"),
-  },
-  {
-    datebegin: new Date("April 19, 2021 19:00:00"),
-    dateend: new Date("April 19, 2021 22:00:00"),
-  },
-  {
-    datebegin: new Date("April 19, 2021 23:00:00"),
-    dateend: new Date("April 20, 2021 05:00:00"),
-  },
-  {
-    datebegin: new Date("April 20, 2021 09:00:00"),
-    dateend: new Date("April 20, 2021 22:00:00"),
-  },
-];
 const NewDemand = (props) => {
+  const [occupation, setoccupation] = useState([]);
   const [timevalue, settimevalue] = useState("19:00");
   const [paymentmethod, setpaymentmethod] = useState("CB");
   const [longtime, setlongtime] = useState(2);
@@ -42,6 +21,27 @@ const NewDemand = (props) => {
   const [success, setsucess] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
+
+  useEffect(() => {
+    const vsendReq = async () => {
+      try {
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/occup/`,
+          "GET",
+          null,
+          { Authorization: "bearer " + auth.token }
+        );
+        console.log(response.occup);
+        response.occup.forEach((el) => {
+          el.datebegin = new Date(el.datebegin);
+          el.dateend = new Date(el.dateend);
+        });
+        console.log(response.occup);
+        setoccupation(response.occup);
+      } catch (err) {}
+    };
+    vsendReq();
+  }, [auth.token, sendRequest]);
 
   const [value, setvaluechange] = useState(
     new Date(new Date().setHours(0, 0, 0, 0))
@@ -89,7 +89,7 @@ const NewDemand = (props) => {
   useEffect(() => {
     let senderfeedback;
 
-    const reservationonsamedate = DUMMYOCCUPATION.filter((res) => {
+    const reservationonsamedate = occupation.filter((res) => {
       return (
         datesAreOnSameDay(value, res.datebegin) ||
         datesAreOnSameDay(value, res.dateend)
@@ -151,12 +151,12 @@ const NewDemand = (props) => {
       });
     }
     setfeedback(senderfeedback);
-  }, [value]);
+  }, [value, occupation]);
 
   //set feedbacktime
   useEffect(() => {
     let senderfeedback = "";
-    const reservationonsamedate = DUMMYOCCUPATION.filter((res) => {
+    const reservationonsamedate = occupation.filter((res) => {
       return (
         datesAreOnSameDay(value, res.datebegin) ||
         datesAreOnSameDay(value, res.dateend)
@@ -187,7 +187,7 @@ const NewDemand = (props) => {
       });
     }
     setfeedbacktime(senderfeedback);
-  }, [timevalue, value]);
+  }, [timevalue, value, occupation]);
 
   //changehourselectedlong
   const longtimevalueHandler = (e) => {
@@ -209,7 +209,7 @@ const NewDemand = (props) => {
 
     datebeginning.setHours(hourwanted);
 
-    const reservationonsamedate = DUMMYOCCUPATION.filter((res) => {
+    const reservationonsamedate = occupation.filter((res) => {
       return (
         datesAreOnSameDay(value, res.datebegin) ||
         datesAreOnSameDay(value, res.dateend) ||
@@ -242,7 +242,7 @@ const NewDemand = (props) => {
     });
     setmaxh(min);
     setlongtime((p) => Math.min(p, min));
-  }, [timevalue, value]);
+  }, [timevalue, value, occupation]);
 
   //changemsg
   const changemessagehandler = (e) => {
@@ -276,7 +276,7 @@ const NewDemand = (props) => {
 
     try {
       await sendRequest(
-        `http://localhost:5000/api/demand/new`,
+        `${process.env.REACT_APP_BACKENDURL}/api/demand/new`,
         "POST",
         JSON.stringify(tosend),
         {
@@ -287,6 +287,7 @@ const NewDemand = (props) => {
       setsucess(false);
       setconfirmationmode(false);
       setmessage("");
+
       props.onCancel();
     } catch (err) {}
   };

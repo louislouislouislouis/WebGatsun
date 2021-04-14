@@ -51,7 +51,9 @@ const UserMessages = () => {
   const sendlivreq = useCallback(() => {
     const vsendReq = async () => {
       try {
-        await sendRequest(`http://localhost:5000/api/live/${convId}/newmsg`);
+        await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/live/${convId}/newmsg`
+        );
       } catch (err) {}
     };
     vsendReq();
@@ -61,7 +63,7 @@ const UserMessages = () => {
   const listenEvt = useCallback(() => {
     if (!evtSrclive.current) {
       evtSrclive.current = new EventSource(
-        `http://localhost:5000/api/live/${auth.userId}`
+        `${process.env.REACT_APP_BACKENDURL}/api/live/${auth.userId}`
       );
     }
   }, [auth.userId]);
@@ -71,7 +73,7 @@ const UserMessages = () => {
     const vsendReq = async () => {
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/conv/${convId}`,
+          `${process.env.REACT_APP_BACKENDURL}/api/conv/${convId}`,
           "GET",
           null,
           { Authorization: "bearer " + auth.token }
@@ -91,7 +93,7 @@ const UserMessages = () => {
       let larep;
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/conv/${convId}`,
+          `${process.env.REACT_APP_BACKENDURL}/api/conv/${convId}`,
           "GET",
           null,
           { Authorization: "bearer " + auth.token }
@@ -105,7 +107,7 @@ const UserMessages = () => {
           return part !== auth.userId;
         });
         const response = await sendRequest(
-          `http://localhost:5000/api/user/${otheruse[0]}`,
+          `${process.env.REACT_APP_BACKENDURL}/api/user/${otheruse[0]}`,
           "GET",
           null,
           { Authorization: "bearer " + auth.token }
@@ -137,7 +139,7 @@ const UserMessages = () => {
   const userUpdateSubmitHandler = async (e) => {
     e.preventDefault();
     await sendRequest(
-      `http://localhost:5000/api/conv/${convId}/msg`,
+      `${process.env.REACT_APP_BACKENDURL}/api/conv/${convId}/msg`,
       "POST",
       JSON.stringify({
         value: MsgState.inputs.body.value,
@@ -178,7 +180,7 @@ const UserMessages = () => {
         {otheruser && (
           <h1
             style={{ textAlign: "center" }}
-          >{`${otheruser.firstname} ${otheruser.firstname}`}</h1>
+          >{`${otheruser.firstname} ${otheruser.name}`}</h1>
         )}
         <div className="user_conv">
           {/*  <div className="user_conv_info">

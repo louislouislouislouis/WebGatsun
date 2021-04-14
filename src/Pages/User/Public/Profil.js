@@ -34,7 +34,7 @@ const Profil = () => {
     const sendReq = async () => {
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/user/${userId}`
+          `${process.env.REACT_APP_BACKENDURL}/api/user/${userId}`
         );
         console.log(response);
         setUser(response);
@@ -57,7 +57,7 @@ const Profil = () => {
     e.preventDefault();
     try {
       const response = await sendRequest(
-        `http://localhost:5000/api/conv/exist`,
+        `${process.env.REACT_APP_BACKENDURL}/api/conv/exist`,
         "POST",
         JSON.stringify({
           userId1: auth.userId,

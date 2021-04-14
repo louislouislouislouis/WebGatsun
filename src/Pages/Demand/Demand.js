@@ -17,7 +17,6 @@ import Modal from "../../Components/Shared/Modal";
 const Demand = () => {
   const [alldemand, setalldemand] = useState([]);
   const [newdemandmode, setnewdemandMode] = useState(false);
-
   const [focusmode, setfocusmode] = useState(false);
   const [focus, setfocus] = useState(false);
   const [histomodecomplet, sethistomodecomplet] = useState(false);
@@ -31,7 +30,7 @@ const Demand = () => {
     const sendreq = async () => {
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/demand/`,
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/`,
           "GET",
           null,
           { Authorization: "bearer " + auth.token }
@@ -109,7 +108,7 @@ const Demand = () => {
         </div>
         <div className="datedébut">
           <h1>Date de la réservation</h1>
-          <p>{DatetoStringMinemethod(new Date(focus.askedDatebeg))}</p>
+          <p>{new Date(focus.askedDatebeg).toString()}</p>
         </div>
         <div className="Heure">
           <h1>Nombre d'heure</h1>
@@ -129,12 +128,21 @@ const Demand = () => {
                   ? "orange"
                   : focus.status === "Refusé"
                   ? "red"
+                  : focus.status === "Confirmed - CB payed" ||
+                    focus.status === "Confirmed - Cash"
+                  ? "green"
                   : "black",
             }}
           >
             {focus.status}
           </p>
         </div>
+
+        <div className="modepayment">
+          <h1>Mode de paiement</h1>
+          <p>{focus.paymentmethod}</p>
+        </div>
+
         {focus.feedback && (
           <div className="feedback">
             <h1>Feedback</h1>
@@ -180,7 +188,7 @@ const Demand = () => {
           className="UnconnectedIndividualIcon"
         />
         <IconSvg
-          onClick={newdemandHandler}
+          onClick={() => console.log("pas encore dispo")}
           src={paniersvg}
           alt={"pannier"}
           width="150px"
@@ -229,6 +237,9 @@ const Demand = () => {
                           ? "orange"
                           : demand.status === "Refusé"
                           ? "red"
+                          : demand.status === "Confirmed - CB payed" ||
+                            demand.status === "Confirmed - Cash"
+                          ? "green"
                           : "black",
                     }}
                   >
@@ -261,6 +272,9 @@ const Demand = () => {
                             ? "orange"
                             : demand.status === "Refusé"
                             ? "red"
+                            : demand.status === "Confirmed - CB payed" ||
+                              demand.status === "Confirmed - Cash"
+                            ? "green"
                             : "black",
                       }}
                     >

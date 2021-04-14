@@ -15,6 +15,7 @@
   -moz-box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
   background: rgb(255, 166, 77);
   background: linear-gradient(90deg, #ffa64d 0%, #feb175 100%);
+  z-index: 5;
 }
 .IconNav {
   height: 85px;

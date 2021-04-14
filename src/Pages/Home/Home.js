@@ -33,7 +33,7 @@ const Home = () => {
       const sendReq = async () => {
         try {
           const response = await sendRequest(
-            `http://localhost:5000/api/user/${auth.userId}`
+            `${process.env.REACT_APP_BACKENDURL}/api/user/${auth.userId}`
           );
           setUser(response);
         } catch (err) {}

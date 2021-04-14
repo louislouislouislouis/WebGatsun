@@ -97,16 +97,19 @@ const Auth = (props) => {
     e.preventDefault();
     if (isLoginMode) {
       try {
-        const response = await fetch(`http://localhost:5000/api/user/log`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: authState.inputs.email.value,
-            password: authState.inputs.password.value,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKENDURL}/api/user/log`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: authState.inputs.email.value,
+              password: authState.inputs.password.value,
+            }),
+          }
+        );
         const responseData = await response.json();
         if (response.status === 201) {
           auth.login(
@@ -123,22 +126,25 @@ const Auth = (props) => {
       }
     } else {
       try {
-        const response = await fetch(`http://localhost:5000/api/user/sgnp`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: authState.inputs.email.value,
-            password: authState.inputs.password.value,
-            bio: authState.inputs.Bio.value,
-            name: authState.inputs.name.value,
-            firstName: authState.inputs.firstName.value,
-            image: authState.inputs.image.value,
-            status: status,
-            likes: likes,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKENDURL}/api/user/sgnp`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: authState.inputs.email.value,
+              password: authState.inputs.password.value,
+              bio: authState.inputs.Bio.value,
+              name: authState.inputs.name.value,
+              firstName: authState.inputs.firstName.value,
+              image: authState.inputs.image.value,
+              status: status,
+              likes: likes,
+            }),
+          }
+        );
 
         const responseData = await response.json();
         auth.login(responseData.userId, responseData.token);
@@ -219,7 +225,7 @@ const Auth = (props) => {
     e.preventDefault();
     try {
       await sendRequest(
-        `http://localhost:5000/api/user/${auth.userId}`,
+        `${process.env.REACT_APP_BACKENDURL}/api/user/${auth.userId}`,
         "PATCH",
         JSON.stringify({
           bio: authState.inputs.Bio.value,

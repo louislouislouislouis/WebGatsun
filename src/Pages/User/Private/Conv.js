@@ -26,7 +26,7 @@ const Conv = (props) => {
     const sendReq = async () => {
       try {
         const convsresponse = await sendRequest(
-          `http://localhost:5000/api/conv/fbuser/${userId}`,
+          `${process.env.REACT_APP_BACKENDURL}/api/conv/fbuser/${userId}`,
           "GET",
           null,
           { Authorization: "Bearer " + auth.token }
@@ -55,7 +55,7 @@ const Conv = (props) => {
         for (const [key, value] of Object.entries(myconv)) {
           try {
             const response = await sendRequest2(
-              `http://localhost:5000/api/user/${value.paticipant}`,
+              `${process.env.REACT_APP_BACKENDURL}/api/user/${value.paticipant}`,
               "GET",
               null,
               { Authorization: "Bearer " + auth.token }

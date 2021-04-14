@@ -28,14 +28,14 @@ const Users = () => {
       try {
         if (!auth.token) {
           const convsresponse = await sendRequest(
-            `http://localhost:5000/api/user/alluser`
+            `${process.env.REACT_APP_BACKENDURL}/api/user/alluser`
           );
           if (convsresponse) {
             setallusers(convsresponse.users);
           }
         } else {
           const convsresponse = await sendRequest(
-            `http://localhost:5000/api/user/alluser/right`,
+            `${process.env.REACT_APP_BACKENDURL}/api/user/alluser/right`,
             "GET",
             null,
             { Authorization: "Bearer " + auth.token }
@@ -63,7 +63,7 @@ const Users = () => {
   const ConvHandler = async (e) => {
     try {
       const response = await sendRequest(
-        `http://localhost:5000/api/conv/exist`,
+        `${process.env.REACT_APP_BACKENDURL}/api/conv/exist`,
         "POST",
         JSON.stringify({
           userId1: auth.userId,

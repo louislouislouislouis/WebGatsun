@@ -12,15 +12,25 @@ import "./Admin.css";
 import Errormodal from "../../Components/Shared/ErrorModal";
 
 const Admin = () => {
+  //data
   const [alldemand, setalldemand] = useState([]);
   const [prevalldemand, setprevalldemand] = useState([]);
+
+  const [alldemandpaiment, setalldemandpaiement] = useState([]);
+  const [prevalldemandpaiment, setprevalldemandpaiment] = useState([]);
   const [developmode, setdevelopmode] = useState(false);
+  const [developmodepaiment, setdevelopmodepeiement] = useState(false);
+
   const [confirmationmode, setconfirmationmode] = useState(false);
+
   const [focus, setfocus] = useState({});
   const [focusmode, setfocusmode] = useState(false);
+
   const [success, setsuccess] = useState();
   const [message, setmessage] = useState("");
+
   const [reload, setrelaos] = useState(false);
+
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
 
@@ -43,7 +53,7 @@ const Admin = () => {
     const sendreq = async () => {
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/demand/all`,
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/all`,
           "GET",
           null,
           { Authorization: "bearer " + auth.token }
@@ -54,13 +64,28 @@ const Admin = () => {
     };
     sendreq();
   }, [auth, sendRequest, reload]);
+  useEffect(() => {
+    const sendreq = async () => {
+      try {
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/allpayment`,
+          "GET",
+          null,
+          { Authorization: "bearer " + auth.token }
+        );
+        setalldemandpaiement(response.alldemand);
+        setprevalldemandpaiment(response.alldemand.slice(0, 2));
+      } catch (err) {}
+    };
+    sendreq();
+  }, [auth, sendRequest, reload]);
 
   const developmodehandler = () => {
     setdevelopmode((p) => !p);
   };
 
-  const focusmodehandler = (e) => {
-    setfocusmode((p) => !p);
+  const focusmodehandler = (e, mode) => {
+    setfocusmode(mode);
     setfocus(e);
   };
   const responsehandle = (e) => {
@@ -70,7 +95,12 @@ const Admin = () => {
   const modeconfhandler = (e) => {
     setconfirmationmode((p) => !p);
   };
+  const developmodepaiementhandler = (e) => {
+    setdevelopmodepeiement((p) => !p);
+  };
+
   const hndlesubmit = async (e) => {
+    console.log(e);
     if (!success && message !== "") {
       const tosend = {
         demand: e._id,
@@ -81,7 +111,7 @@ const Admin = () => {
 
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/demand/`,
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/`,
           "PATCH",
           JSON.stringify(tosend),
           {
@@ -98,8 +128,7 @@ const Admin = () => {
           setmessage("");
         }
       } catch (err) {}
-    }
-    if (success) {
+    } else if (success) {
       const tosend = {
         demand: e._id,
         message: "ras",
@@ -109,7 +138,29 @@ const Admin = () => {
 
       try {
         const response = await sendRequest(
-          `http://localhost:5000/api/demand/`,
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/`,
+          "PATCH",
+          JSON.stringify(tosend),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+        if (response.message === "Success") {
+          setconfirmationmode(false);
+          setdevelopmode(false);
+          setfocusmode(false);
+          setrelaos((p) => !p);
+          setmessage("");
+        }
+      } catch (err) {}
+    } else if (focusmode === "paiment") {
+      try {
+        const tosend = {
+          demand: e._id,
+        };
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/validate`,
           "PATCH",
           JSON.stringify(tosend),
           {
@@ -133,7 +184,7 @@ const Admin = () => {
   const sendverifypayment = async (e) => {
     try {
       const response = await sendRequest(
-        `http://localhost:5000/api/helloasso/`,
+        `${process.env.REACT_APP_BACKENDURL}/api/helloasso/`,
         "GET",
         null,
         {
@@ -156,18 +207,26 @@ const Admin = () => {
         type="Other"
         title={"Warning"}
         text={
-          !success
-            ? "Vous êtes sur le point de refuser une demande. En êtes vous sur ?"
-            : "Vous êtes sur le point de valider une demande. Êtes vous sur de pouvoir l'assurer?"
+          success
+            ? "Vous êtes sur le point de valider une demande. Êtes vous sur de pouvoir l'assurer?"
+            : focusmode === "paiment"
+            ? "Vous êtes sur le point de confirmer le paiement d'un membre. En êtes vous sur ? "
+            : "Vous êtes sur le point de refuser une demande. En êtes vous sur ?"
         }
         onCancel={modeconfhandler}
         onClick={() => hndlesubmit(focus)}
         show={confirmationmode}
         isLoading={isLoading}
-        disabled={!success && message === ""}
-        buttontext={success ? "Valider la demande" : "Refuser la demande"}
+        disabled={focusmode !== "paiment" && !success && message === ""}
+        buttontext={
+          success
+            ? "Valider la demande"
+            : focusmode === "paiment"
+            ? "Je confirme son paiement"
+            : "Refuser la demande"
+        }
       >
-        {!success && (
+        {focusmode !== "paiment" && !success && (
           <div className="messa">
             <h2>Message (obligatoire)</h2>
             <textarea
@@ -182,7 +241,7 @@ const Admin = () => {
         )}
       </Confimationmodal>
       <Modal
-        show={focusmode}
+        show={!!focusmode}
         className="focuondemand"
         onCancel={quitfocusHandler}
         height={"auto"}
@@ -230,31 +289,57 @@ const Admin = () => {
           <h1 style={{ fontSize: "20px" }}>Mode de paiement</h1>
           <p>{focus.paymentmethod}</p>
         </div>
+        <div className="demandId">
+          <h1 style={{ fontSize: "20px" }}>Message</h1>
+          <p>{focus.body}</p>
+        </div>
 
         <div className="actionstodo">
-          <Button
-            height="50px"
-            width="40%"
-            borderradius="38px"
-            maxWidth="90vw"
-            onClick={() => responsehandle(false)}
-            bottom="10px"
-            topmargin="30px"
-          >
-            <h4 style={{ fontSize: "20px", margin: "0" }}>Refuser</h4>
-          </Button>
-          <Button
-            height="50px"
-            orange
-            width="40%"
-            borderradius="38px"
-            maxWidth="90vw"
-            onClick={() => responsehandle(true)}
-            bottom="10px"
-            topmargin="30px"
-          >
-            <h4 style={{ fontSize: "20px", margin: "0" }}>Valider</h4>
-          </Button>
+          {focusmode === "reservationenattente" && (
+            <React.Fragment>
+              <Button
+                height="50px"
+                width="40%"
+                borderradius="38px"
+                maxWidth="90vw"
+                onClick={() => responsehandle(false)}
+                bottom="10px"
+                topmargin="30px"
+              >
+                <h4 style={{ fontSize: "20px", margin: "0" }}>Refuser</h4>
+              </Button>
+              <Button
+                height="50px"
+                orange
+                width="40%"
+                borderradius="38px"
+                maxWidth="90vw"
+                onClick={() => responsehandle(true)}
+                bottom="10px"
+                topmargin="30px"
+              >
+                <h4 style={{ fontSize: "20px", margin: "0" }}>Valider</h4>
+              </Button>
+            </React.Fragment>
+          )}
+          {focusmode === "paiment" && (
+            <React.Fragment>
+              <Button
+                height="50px"
+                width="80%"
+                orange
+                borderradius="38px"
+                maxWidth="90vw"
+                onClick={() => responsehandle(false)}
+                bottom="10px"
+                topmargin="30px"
+              >
+                <h4 style={{ fontSize: "20px", margin: "0" }}>
+                  Valider paiement
+                </h4>
+              </Button>
+            </React.Fragment>
+          )}
         </div>
       </Modal>
       <div
@@ -272,29 +357,38 @@ const Admin = () => {
           {!developmode &&
             prevalldemand.map((demand) => {
               return (
-                <Button
-                  height="55px"
-                  orange
-                  borderradius="38px"
-                  maxWidth="90vw"
-                  onClick={() => focusmodehandler(demand)}
-                >
-                  <h2>{demand.ownerdenomination}</h2>
-                </Button>
+                <React.Fragment key={demand._id}>
+                  <Button
+                    key={demand._id}
+                    height="55px"
+                    orange
+                    borderradius="38px"
+                    maxWidth="90vw"
+                    onClick={() =>
+                      focusmodehandler(demand, "reservationenattente")
+                    }
+                  >
+                    <h2>{demand.ownerdenomination}</h2>
+                  </Button>
+                </React.Fragment>
               );
             })}
           {developmode &&
             alldemand.map((demand) => {
               return (
-                <Button
-                  height="55px"
-                  orange
-                  borderradius="38px"
-                  maxWidth="90vw"
-                  onClick={() => focusmodehandler(demand)}
-                >
-                  <h2>{demand.ownerdenomination}</h2>
-                </Button>
+                <React.Fragment key={demand._id}>
+                  <Button
+                    height="55px"
+                    orange
+                    borderradius="38px"
+                    maxWidth="90vw"
+                    onClick={() =>
+                      focusmodehandler(demand, "reservationenattente")
+                    }
+                  >
+                    <h2>{demand.ownerdenomination}</h2>
+                  </Button>
+                </React.Fragment>
               );
             })}
         </div>
@@ -322,23 +416,73 @@ const Admin = () => {
             orange
             borderradius="38px"
             width="40%"
+            marginbottom="20px"
             maxWidth="90vw"
             onClick={sendverifypayment}
           >
             <h4>Check Payment</h4>
           </Button>
-          <Button
-            height="55px"
-            orange
-            borderradius="38px"
-            width="40%"
-            maxWidth="90vw"
-            marginbottom="20px"
-          >
-            <h4>Check Member</h4>
-          </Button>
         </div>
         <div className="synchoreservation"></div>
+      </div>
+      <div
+        className="paiementenattente"
+        style={{ height: developmodepaiment ? "70vh" : "280px" }}
+      >
+        <h1>Paiements en attente</h1>
+        <div
+          className="buttoncontainer"
+          style={{
+            overflowY: developmodepaiment ? "scroll" : "visible",
+            height: developmodepaiment ? "80%" : "180px",
+          }}
+        >
+          {!developmodepaiment &&
+            prevalldemandpaiment.map((demand) => {
+              return (
+                <React.Fragment key={demand._id}>
+                  <Button
+                    key={demand._id}
+                    height="55px"
+                    orange
+                    borderradius="38px"
+                    maxWidth="90vw"
+                    onClick={() => focusmodehandler(demand, "paiment")}
+                  >
+                    <h2>{demand.ownerdenomination}</h2>
+                  </Button>
+                </React.Fragment>
+              );
+            })}
+          {developmodepaiment &&
+            alldemandpaiment.map((demand) => {
+              return (
+                <React.Fragment key={demand._id}>
+                  <Button
+                    key={demand._id}
+                    height="55px"
+                    orange
+                    borderradius="38px"
+                    maxWidth="90vw"
+                    onClick={() => focusmodehandler(demand, "paiment")}
+                  >
+                    <h2>{demand.ownerdenomination}</h2>
+                  </Button>
+                </React.Fragment>
+              );
+            })}
+        </div>
+        <img
+          style={{
+            width: "43px",
+            position: "absolute",
+            bottom: "5px",
+            left: "45%",
+          }}
+          src={developsvg}
+          alt="develop"
+          onClick={developmodepaiementhandler}
+        />
       </div>
     </div>
   );
