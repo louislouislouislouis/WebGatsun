@@ -14,6 +14,7 @@ const NewDemand = (props) => {
   const [occupation, setoccupation] = useState([]);
   const [timevalue, settimevalue] = useState("19:00");
   const [paymentmethod, setpaymentmethod] = useState("CB");
+  const [keys, setkeys] = useState(false);
   const [longtime, setlongtime] = useState(2);
   const [feedback, setfeedback] = useState();
   const [message, setmessage] = useState("");
@@ -254,6 +255,7 @@ const NewDemand = (props) => {
     setpaymentmethod(e);
   };
   const hndlesubmit = async (e) => {
+    console.log("rrr");
     const hourwanted = parseInt(timevalue.substring(0, 2));
     //console.log(hourwanted);
 
@@ -269,6 +271,8 @@ const NewDemand = (props) => {
       askedDatebeg: datebeginning,
       askedDateend: enddate,
       message: message,
+      key: props.public ? keys : "NC",
+      type: props.public ? "public" : "private",
       paymentmethod: paymentmethod === "Liquide" ? "cash" : "cb",
     };
     //console.log(tosend);
@@ -294,6 +298,9 @@ const NewDemand = (props) => {
   const modeconfhandler = () => {
     setconfirmationmode((p) => !p);
   };
+  const changekeyshandler = (e) => {
+    setkeys(e);
+  };
 
   return (
     <React.Fragment>
@@ -307,9 +314,17 @@ const NewDemand = (props) => {
         type={success ? "Success" : "Avert"}
         text={
           !success
-            ? `Vous êtes sur le point de demander une réservation du studio pour le ${DatetoStringMinemethod(
+            ? `Vous êtes sur le point de demander une réservation ${
+                props.public ? "public" : "privée"
+              } du studio pour le ${DatetoStringMinemethod(
                 value
-              )} à ${timevalue}H pour une durée de ${longtime}H. Le paiement se fera en ${paymentmethod}`
+              )} à ${timevalue}H pour une durée de ${longtime}H. ${
+                props.public
+                  ? keys
+                    ? "VOUS AVEZ LES CLEFS"
+                    : "VOUS N'AVEZ PAS LES CLEFS"
+                  : `Le paiement se fera en ${paymentmethod}`
+              }`
             : "Votre confirmation a été réservé. Vous allez être contactez par mail sous peu"
         }
         onCancel={modeconfhandler}
@@ -405,28 +420,49 @@ const NewDemand = (props) => {
               : ""}
           </p>
         </div>
-
-        <div className="skingreason">
-          <h2>Mode de Paiement</h2>
-          <div className="Answerstatu">
-            <div
-              className={`choice${
-                paymentmethod === "CB" ? "focus" : "unfocus"
-              }`}
-              onClick={() => changeStatusHandler("CB")}
-            >
-              <p>CB</p>
-            </div>
-            <div
-              className={`choice${
-                paymentmethod === "Liquide" ? "focus" : "unfocus"
-              }`}
-              onClick={() => changeStatusHandler("Liquide")}
-            >
-              <p>Liquide</p>
+        {!props.public && (
+          <div className="skingreason">
+            <h2>Mode de Paiement</h2>
+            <div className="Answerstatu">
+              <div
+                className={`choice${
+                  paymentmethod === "CB" ? "focus" : "unfocus"
+                }`}
+                onClick={() => changeStatusHandler("CB")}
+              >
+                <p>CB</p>
+              </div>
+              <div
+                className={`choice${
+                  paymentmethod === "Liquide" ? "focus" : "unfocus"
+                }`}
+                onClick={() => changeStatusHandler("Liquide")}
+              >
+                <p>Liquide</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+        {props.public && (
+          <div className="keys">
+            <h2>Clefs du studio</h2>
+            <div className="Answerstatu">
+              <div
+                className={`choice${keys ? "focus" : "unfocus"}`}
+                onClick={() => changekeyshandler(true)}
+              >
+                <p>J'ai les clefs</p>
+              </div>
+              <div
+                className={`choice${!keys ? "focus" : "unfocus"}`}
+                onClick={() => changekeyshandler(false)}
+              >
+                <p>Je n'ai pas les clefs</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Button
           height="56px"
           text="Reserver le studio"

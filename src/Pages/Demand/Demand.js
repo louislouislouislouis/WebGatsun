@@ -149,6 +149,12 @@ const Demand = () => {
             <p>{focus.feedback}</p>
           </div>
         )}
+
+        <div className="feedback">
+          <h1>Type</h1>
+          <p>{focus.type}</p>
+        </div>
+
         {focus.feedbackdate && (
           <div className="feedbackdate">
             <h1>Date de retour</h1>

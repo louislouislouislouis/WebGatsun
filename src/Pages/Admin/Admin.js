@@ -10,6 +10,7 @@ import developsvg from "../../File/svg/develop.svg";
 
 import "./Admin.css";
 import Errormodal from "../../Components/Shared/ErrorModal";
+import NewDemand from "../Demand/NewDemand";
 
 const Admin = () => {
   //data
@@ -18,10 +19,12 @@ const Admin = () => {
 
   const [alldemandpaiment, setalldemandpaiement] = useState([]);
   const [prevalldemandpaiment, setprevalldemandpaiment] = useState([]);
+  const [alldemandkeys, setalldemandkeys] = useState([]);
   const [developmode, setdevelopmode] = useState(false);
   const [developmodepaiment, setdevelopmodepeiement] = useState(false);
 
   const [confirmationmode, setconfirmationmode] = useState(false);
+  const [newdemandmode, setnewdemandemode] = useState(false);
 
   const [focus, setfocus] = useState({});
   const [focusmode, setfocusmode] = useState(false);
@@ -68,6 +71,20 @@ const Admin = () => {
     const sendreq = async () => {
       try {
         const response = await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/allkeys`,
+          "GET",
+          null,
+          { Authorization: "bearer " + auth.token }
+        );
+        setalldemandkeys(response.alldemand);
+      } catch (err) {}
+    };
+    sendreq();
+  }, [auth, sendRequest, reload]);
+  useEffect(() => {
+    const sendreq = async () => {
+      try {
+        const response = await sendRequest(
           `${process.env.REACT_APP_BACKENDURL}/api/demand/allpayment`,
           "GET",
           null,
@@ -100,8 +117,8 @@ const Admin = () => {
   };
 
   const hndlesubmit = async (e) => {
-    console.log(e);
-    if (!success && message !== "") {
+    console.log("dede");
+    if (!success && message !== "" && focusmode == "reservationenattente") {
       const tosend = {
         demand: e._id,
         result: success,
@@ -128,7 +145,7 @@ const Admin = () => {
           setmessage("");
         }
       } catch (err) {}
-    } else if (success) {
+    } else if (success && focusmode == "reservationenattente") {
       const tosend = {
         demand: e._id,
         message: "ras",
@@ -176,10 +193,37 @@ const Admin = () => {
           setmessage("");
         }
       } catch (err) {}
+    } else if (focusmode == "keys") {
+      try {
+        console.log("dd");
+        const tosend = {
+          demand: e._id,
+          result: success,
+        };
+        const response = await sendRequest(
+          `${process.env.REACT_APP_BACKENDURL}/api/demand/validatekeys`,
+          "PATCH",
+          JSON.stringify(tosend),
+          {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
+          }
+        );
+        if (response.message === "Success") {
+          setconfirmationmode(false);
+          setdevelopmode(false);
+          setfocusmode(false);
+          setrelaos((p) => !p);
+          setmessage("");
+        }
+      } catch (err) {}
     }
   };
   const changemessagehandler = (e) => {
     setmessage(e.target.value);
+  };
+  const newdemandHandler = () => {
+    setnewdemandemode((p) => !p);
   };
   const sendverifypayment = async (e) => {
     try {
@@ -207,26 +251,35 @@ const Admin = () => {
         type="Other"
         title={"Warning"}
         text={
-          success
+          success && focusmode == "reservationenattente"
             ? "Vous êtes sur le point de valider une demande. Êtes vous sur de pouvoir l'assurer?"
             : focusmode === "paiment"
             ? "Vous êtes sur le point de confirmer le paiement d'un membre. En êtes vous sur ? "
+            : focusmode === "keys" && success
+            ? "Vous êtes sur le point de confirmer que les clefs ont bien étées données à la personne adéquate. En êtes vous sur ? "
             : "Vous êtes sur le point de refuser une demande. En êtes vous sur ?"
         }
         onCancel={modeconfhandler}
         onClick={() => hndlesubmit(focus)}
         show={confirmationmode}
         isLoading={isLoading}
-        disabled={focusmode !== "paiment" && !success && message === ""}
+        disabled={
+          focusmode !== "keys" &&
+          focusmode !== "paiment" &&
+          !success &&
+          message === ""
+        }
         buttontext={
-          success
+          success && focusmode == "reservationenattente"
             ? "Valider la demande"
             : focusmode === "paiment"
             ? "Je confirme son paiement"
+            : focusmode === "keys" && success
+            ? "Je lui ai donnée les clefs"
             : "Refuser la demande"
         }
       >
-        {focusmode !== "paiment" && !success && (
+        {focusmode !== "keys" && focusmode !== "paiment" && !success && (
           <div className="messa">
             <h2>Message (obligatoire)</h2>
             <textarea
@@ -284,6 +337,10 @@ const Admin = () => {
             {focus.status}
           </p>
         </div>
+        <div className="status">
+          <h1 style={{ fontSize: "20px" }}>Type</h1>
+          <p>{focus.type}</p>
+        </div>
 
         <div className="demandId">
           <h1 style={{ fontSize: "20px" }}>Mode de paiement</h1>
@@ -337,6 +394,34 @@ const Admin = () => {
                 <h4 style={{ fontSize: "20px", margin: "0" }}>
                   Valider paiement
                 </h4>
+              </Button>
+            </React.Fragment>
+          )}
+          {focusmode === "keys" && (
+            <React.Fragment>
+              <Button
+                height="50px"
+                width="80%"
+                orange
+                borderradius="38px"
+                maxWidth="90vw"
+                onClick={() => responsehandle(true)}
+                bottom="10px"
+                topmargin="30px"
+              >
+                <h4 style={{ fontSize: "20px", margin: "0" }}>Clefs données</h4>
+              </Button>
+              <Button
+                height="50px"
+                width="80%"
+                orange
+                borderradius="38px"
+                maxWidth="90vw"
+                onClick={() => responsehandle(false)}
+                bottom="10px"
+                topmargin="30px"
+              >
+                <h4 style={{ fontSize: "20px", margin: "0" }}>Refus</h4>
               </Button>
             </React.Fragment>
           )}
@@ -409,6 +494,7 @@ const Admin = () => {
         <h1>Inventaire</h1>
         <p>Pas encore disponible</p>
       </div>
+      <NewDemand public show={newdemandmode} onCancel={newdemandHandler} />
       <div className="synchronisationHelloAsso">
         <div className="synchroAdhesion">
           <Button
@@ -421,6 +507,17 @@ const Admin = () => {
             onClick={sendverifypayment}
           >
             <h4>Check Payment</h4>
+          </Button>
+          <Button
+            height="55px"
+            orange
+            borderradius="38px"
+            width="40%"
+            marginbottom="20px"
+            maxWidth="90vw"
+            onClick={newdemandHandler}
+          >
+            <h4>Public session</h4>
           </Button>
         </div>
         <div className="synchoreservation"></div>
@@ -483,6 +580,36 @@ const Admin = () => {
           alt="develop"
           onClick={developmodepaiementhandler}
         />
+      </div>
+      <div
+        className="paiementenattente"
+        style={{ height: developmodepaiment ? "70vh" : "" }}
+      >
+        <h1>Clefs en attente</h1>
+        <div
+          className="buttoncontainer"
+          style={{
+            overflowY: developmodepaiment ? "scroll" : "visible",
+            height: developmodepaiment ? "80%" : "",
+          }}
+        >
+          {alldemandkeys.map((demand) => {
+            return (
+              <React.Fragment key={demand._id}>
+                <Button
+                  key={demand._id}
+                  height="55px"
+                  orange
+                  borderradius="38px"
+                  maxWidth="90vw"
+                  onClick={() => focusmodehandler(demand, "keys")}
+                >
+                  <h2>{demand.ownerdenomination}</h2>
+                </Button>
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

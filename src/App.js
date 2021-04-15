@@ -51,9 +51,6 @@ function App() {
         <Route path="/:userId/profil" exact={true}>
           <Profil />
         </Route>
-        <Route path="/auth" exact={true}>
-          <Auth show={true} />
-        </Route>
         <Route path="/:userId/admin" exact={true}>
           <Admin />
         </Route>
@@ -65,9 +62,6 @@ function App() {
       <Switch>
         <Route path="/" exact={true}>
           <Home />
-        </Route>
-        <Route path="/auth" exact={true}>
-          <Auth show={true} />
         </Route>
         <Route path="/conv/:convId" exact={true}>
           <NoRight />

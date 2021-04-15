@@ -21,21 +21,21 @@ const MainNav = (props) => {
         </NavLink>
       </li>
       <li>
-        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
+        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/"}>
           <div className="IconNav">
             <img src={postsvg} alt="user" className="Header_img"></img>
           </div>
         </NavLink>
       </li>
       <li>
-        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
+        <NavLink to={auth.token ? `/demand` : "/"}>
           <div className="IconNav">
             <img src={demandsvg} alt="user" className="Header_img"></img>
           </div>
         </NavLink>
       </li>
       <li>
-        <NavLink to={auth.token ? `/${auth.userId}/profil` : "/auth"}>
+        <NavLink to={auth.token ? `/${auth.userId}/conv` : "/"}>
           <div className="IconNav">
             <img src={msgsvg} alt="user" className="Header_img"></img>
           </div>
