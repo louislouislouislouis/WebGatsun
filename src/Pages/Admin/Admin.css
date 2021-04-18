@@ -95,3 +95,23 @@
   margin-bottom: 0px;
   margin-left: 30px;
 }
+.clefenattente h1 {
+  font-size: 20px;
+  margin-bottom: 0px;
+  margin-left: 30px;
+}
+.clefenattente {
+  margin-top: 30px;
+  background-color: white;
+  padding: 10px;
+  opacity: 0.71;
+  width: 80%;
+  box-shadow: 3px 5px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 55px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.5s ease-in-out;
+  position: relative;
+  max-width: 400px;
+  margin-bottom: 20px;
+}

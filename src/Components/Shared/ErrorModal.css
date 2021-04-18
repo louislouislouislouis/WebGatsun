@@ -1,6 +1,6 @@
 .ErrorModal {
   z-index: 104;
-  position: absolute;
+  position: fixed;
   display: flex;
   margin: 0 auto 0 auto;
   flex-direction: column;

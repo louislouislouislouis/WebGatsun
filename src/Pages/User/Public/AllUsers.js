@@ -74,11 +74,9 @@ const Users = () => {
           Authorization: "Bearer " + auth.token,
         }
       );
-      console.log(response);
       history.push(`/conv/${response.idconv}`);
     } catch (err) {}
   };
-  console.log(UserHighlight);
   //GOPROFIL
   const goprofileHandler = () => {
     history.push(`/${UserHighlight.id}/profil`);

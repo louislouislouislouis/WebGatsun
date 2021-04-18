@@ -115,7 +115,8 @@ const Auth = (props) => {
           auth.login(
             responseData.userId,
             responseData.token,
-            responseData.UserImg
+            responseData.UserImg,
+            responseData.role
           );
           props.onCancel();
         } else {

@@ -12,17 +12,34 @@ import Confimationmodal from "../../Components/Shared/Confimationmodal";
 
 const NewDemand = (props) => {
   const [occupation, setoccupation] = useState([]);
+
+  //value necessited by the users
   const [timevalue, settimevalue] = useState("19:00");
   const [paymentmethod, setpaymentmethod] = useState("CB");
-  const [keys, setkeys] = useState(false);
   const [longtime, setlongtime] = useState(2);
-  const [feedback, setfeedback] = useState();
   const [message, setmessage] = useState("");
+  const [value, setvaluechange] = useState(
+    new Date(new Date().setHours(0, 0, 0, 0))
+  );
+  const [keys, setkeys] = useState(false);
+
+  //value of controls
+  const [maxh, setmaxh] = useState(6);
+  const [feedback, setfeedback] = useState();
   const [feedbacktime, setfeedbacktime] = useState("");
+
+  //success sendingreq
   const [success, setsucess] = useState(false);
+
+  //different mode of vision
+  const [showingcalendar, setshowingcalendar] = useState(false);
+  const [confirmationmode, setconfirmationmode] = useState(false);
+
+  //habitual
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
 
+  //Get the date of occupation when load
   useEffect(() => {
     const vsendReq = async () => {
       try {
@@ -32,37 +49,60 @@ const NewDemand = (props) => {
           null,
           { Authorization: "bearer " + auth.token }
         );
-        console.log(response.occup);
+
         response.occup.forEach((el) => {
           el.datebegin = new Date(el.datebegin);
           el.dateend = new Date(el.dateend);
         });
-        console.log(response.occup);
+
         setoccupation(response.occup);
       } catch (err) {}
     };
     vsendReq();
   }, [auth.token, sendRequest]);
 
-  const [value, setvaluechange] = useState(
-    new Date(new Date().setHours(0, 0, 0, 0))
-  );
-  const [showingcalendar, setshowingcalendar] = useState(false);
-  const [confirmationmode, setconfirmationmode] = useState(false);
+  //MODE CHANGING
 
+  //change mode
+  const modeconfhandler = () => {
+    setconfirmationmode((p) => !p);
+  };
   //show calendar
   const showcalendar = (state) => {
     setshowingcalendar(state);
   };
+
+  //VALUE CHANGING
+
+  //changemsg
+  const changemessagehandler = (e) => {
+    setmessage(e.target.value);
+  };
+  //changemodepaiment
+  const changeStatusHandler = (e) => {
+    setpaymentmethod(e);
+  };
   //chnage date value
   const setvaluechangehandler = (e) => {
     setvaluechange(e);
+  };
+  //change keys
+  const changekeyshandler = (e) => {
+    setkeys(e);
   };
   //changetimevalue
   const timevaluehancler = (e) => {
     let myval = e.target.value.substring(0, 2);
     myval += ":00";
     settimevalue(myval);
+  };
+  //change durée
+  const longtimevalueHandler = (e) => {
+    if (parseInt(e.target.value)) {
+      setlongtime(Math.min(parseInt(e.target.value), maxh));
+    } else if (e.target.value === "") {
+      setlongtime("");
+    }
   };
 
   //Pratical function
@@ -73,7 +113,6 @@ const NewDemand = (props) => {
       first.getDate() === second.getDate()
     );
   };
-
   const DatetoStringMinemethod = (date) => {
     return (
       (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
@@ -86,17 +125,15 @@ const NewDemand = (props) => {
     );
   };
 
-  //setfeedbackdate
+  //setfeedbackdate each time new date
   useEffect(() => {
     let senderfeedback;
-
     const reservationonsamedate = occupation.filter((res) => {
       return (
         datesAreOnSameDay(value, res.datebegin) ||
         datesAreOnSameDay(value, res.dateend)
       );
     });
-
     if (reservationonsamedate.length !== 0) {
       senderfeedback = "That day stud is booked from ";
       reservationonsamedate.forEach((occup, index) => {
@@ -154,7 +191,7 @@ const NewDemand = (props) => {
     setfeedback(senderfeedback);
   }, [value, occupation]);
 
-  //set feedbacktime
+  //set feedbacktime each time time of reservation or date change
   useEffect(() => {
     let senderfeedback = "";
     const reservationonsamedate = occupation.filter((res) => {
@@ -163,7 +200,6 @@ const NewDemand = (props) => {
         datesAreOnSameDay(value, res.dateend)
       );
     });
-
     if (reservationonsamedate.length !== 0) {
       const hourwanted = parseInt(timevalue.substring(0, 2));
       reservationonsamedate.forEach((occup, index) => {
@@ -190,17 +226,7 @@ const NewDemand = (props) => {
     setfeedbacktime(senderfeedback);
   }, [timevalue, value, occupation]);
 
-  //changehourselectedlong
-  const longtimevalueHandler = (e) => {
-    if (parseInt(e.target.value)) {
-      setlongtime(Math.min(parseInt(e.target.value), maxh));
-    } else if (e.target.value === "") {
-      setlongtime("");
-    }
-  };
-  const [maxh, setmaxh] = useState(6);
-
-  //update maxhourpossible
+  //update maxhourpossible time time of reservation or date change
   useEffect(() => {
     let landemain = new Date(value);
     landemain.setDate(landemain.getDate() + 1);
@@ -220,15 +246,10 @@ const NewDemand = (props) => {
     let min = 6;
     reservationonsamedate.forEach((date) => {
       if ((date.dateend.getTime() - datebeginning.getTime()) / 3600000 <= 0) {
-        //console.log(" 1:La value ets de 6");
       } else if (
         (date.datebegin.getTime() - datebeginning.getTime()) / 3600000 >=
         0
       ) {
-        /* console.log(
-          "2:La value ets de " +
-            (date.datebegin.getTime() - datebeginning.getTime()) / 3600000
-        ); */
         min = Math.min(
           min,
           (date.datebegin.getTime() - datebeginning.getTime()) / 3600000
@@ -237,7 +258,6 @@ const NewDemand = (props) => {
         (date.datebegin.getTime() - datebeginning.getTime()) / 3600000 < 0 &&
         (date.dateend.getTime() - datebeginning.getTime()) / 3600000 > 0
       ) {
-        // console.log("3:La value ets de 0");
         min = 0;
       }
     });
@@ -245,39 +265,29 @@ const NewDemand = (props) => {
     setlongtime((p) => Math.min(p, min));
   }, [timevalue, value, occupation]);
 
-  //changemsg
-  const changemessagehandler = (e) => {
-    setmessage(e.target.value);
-  };
-  //changemodepaiment
-
-  const changeStatusHandler = (e) => {
-    setpaymentmethod(e);
-  };
+  //envoyer demands
   const hndlesubmit = async (e) => {
-    console.log("rrr");
+    //Creating a good datebeg value
     const hourwanted = parseInt(timevalue.substring(0, 2));
-    //console.log(hourwanted);
-
     let datebeginning = new Date(value);
     datebeginning.setHours(hourwanted);
-    //console.log(datebeginning);
 
+    //Creating a good enddate value
     let enddate = new Date(datebeginning);
     enddate.setHours(enddate.getHours() + longtime);
 
+    //object to send
     const tosend = {
       askingDate: new Date(),
       askedDatebeg: datebeginning,
       askedDateend: enddate,
       message: message,
-      key: props.public ? keys : "NC",
+      ...(props.public && { key: keys }),
       type: props.public ? "public" : "private",
       paymentmethod: paymentmethod === "Liquide" ? "cash" : "cb",
     };
-    //console.log(tosend);
-    //console.log(JSON.stringify(tosend));
 
+    //envoie
     try {
       await sendRequest(
         `${process.env.REACT_APP_BACKENDURL}/api/demand/new`,
@@ -288,18 +298,18 @@ const NewDemand = (props) => {
           Authorization: "Bearer " + auth.token,
         }
       );
-      setsucess(false);
-      setconfirmationmode(false);
+      //if victory set sucess
+      setsucess(true);
+      //renbobiner all data
       setmessage("");
+      setlongtime(2);
+      setpaymentmethod("CB");
+      settimevalue("19:00");
+      setvaluechange(new Date(new Date().setHours(0, 0, 0, 0)));
+      setkeys(false);
 
       props.onCancel();
     } catch (err) {}
-  };
-  const modeconfhandler = () => {
-    setconfirmationmode((p) => !p);
-  };
-  const changekeyshandler = (e) => {
-    setkeys(e);
   };
 
   return (

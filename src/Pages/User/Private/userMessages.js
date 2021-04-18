@@ -123,7 +123,6 @@ const UserMessages = () => {
   useEffect(() => {
     listenEvt();
     evtSrclive.current.addEventListener("newmsg", (event) => {
-      console.log("Message", event.data);
       if (event.data === convId) {
         lasendReq();
       }

@@ -15,7 +15,6 @@ import Allusers from "./Pages/User/Public/AllUsers";
 import Profil from "./Pages/User/Public/Profil";
 import UserMessages from "./Pages/User/Private/userMessages";
 import Conv from "./Pages/User/Private/Conv";
-import Auth from "./Pages/Auth/Auth";
 import NoRight from "./Pages/User/Public/NoRight";
 import Demand from "./Pages/Demand/Demand";
 import NewDemand from "./Pages/Demand/NewDemand";
@@ -24,9 +23,8 @@ import Admin from "./Pages/Admin/Admin";
 //import Waitings from "./Components/Shared/Waitings";
 
 function App() {
-  const { token, login, logout, UserId, UserImg } = useAuth();
+  const { token, login, logout, UserId, UserImg, UserRole } = useAuth();
   let routes;
-
   if (token) {
     routes = (
       <Switch>
@@ -95,6 +93,7 @@ function App() {
         logout: logout,
         userId: UserId,
         UserImg: UserImg,
+        UserRole: UserRole,
       }}
     >
       <Router>

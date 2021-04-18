@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 
 import { AuthContext } from "../../Context/auth-context";
-import { useHttpClient } from "../../Hooks/http-hook";
 
 import "./Home.css";
 
@@ -19,28 +18,11 @@ import adminsvg from "../../File/svg/admin.svg";
 
 const Home = () => {
   const [showauth, setshowauth] = useState(false);
-  const [user, setUser] = useState(null);
+  const auth = useContext(AuthContext);
 
   const HancleclickAuth = () => {
     setshowauth((prevstate) => !prevstate);
   };
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
-  const auth = useContext(AuthContext);
-
-  useEffect(() => {
-    if (auth.userId) {
-      const sendReq = async () => {
-        try {
-          const response = await sendRequest(
-            `${process.env.REACT_APP_BACKENDURL}/api/user/${auth.userId}`
-          );
-          setUser(response);
-        } catch (err) {}
-      };
-      sendReq();
-    }
-  }, [auth, sendRequest]);
 
   return (
     <div className="homepage">
@@ -77,9 +59,9 @@ const Home = () => {
           </div>
         </React.Fragment>
       )}
-      {auth.userId && user && (
+      {auth.userId && (
         <React.Fragment>
-          <Avatar image={user.image} width="206px"></Avatar>
+          <Avatar image={auth.UserImg} width="206px"></Avatar>
           <div className="IconContainerConnect">
             <IconSvg
               link="/demand"
@@ -136,9 +118,9 @@ const Home = () => {
               onClick={auth.logout}
             />
           </div>
-          {(user.role === "bureau" ||
-            user.role === "responsable" ||
-            user.role === "Master") && (
+          {(auth.UserRole === "bureau" ||
+            auth.UserRole === "responsable" ||
+            auth.UserRole === "Master") && (
             <IconSvg
               src={adminsvg}
               alt={"admin"}

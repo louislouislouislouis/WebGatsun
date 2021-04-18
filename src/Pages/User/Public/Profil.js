@@ -36,7 +36,6 @@ const Profil = () => {
         const response = await sendRequest(
           `${process.env.REACT_APP_BACKENDURL}/api/user/${userId}`
         );
-        console.log(response);
         setUser(response);
       } catch (err) {}
     };
@@ -68,7 +67,6 @@ const Profil = () => {
           Authorization: "Bearer " + auth.token,
         }
       );
-      console.log(response);
       history.push(`/conv/${response.idconv}`);
     } catch (err) {}
   };

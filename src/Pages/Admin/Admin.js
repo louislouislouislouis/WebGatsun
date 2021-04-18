@@ -16,19 +16,17 @@ const Admin = () => {
   //data
   const [alldemand, setalldemand] = useState([]);
   const [prevalldemand, setprevalldemand] = useState([]);
-
   const [alldemandpaiment, setalldemandpaiement] = useState([]);
   const [prevalldemandpaiment, setprevalldemandpaiment] = useState([]);
   const [alldemandkeys, setalldemandkeys] = useState([]);
+  const [focus, setfocus] = useState([]);
+
+  //mode of vision
   const [developmode, setdevelopmode] = useState(false);
   const [developmodepaiment, setdevelopmodepeiement] = useState(false);
-
   const [confirmationmode, setconfirmationmode] = useState(false);
   const [newdemandmode, setnewdemandemode] = useState(false);
-
-  const [focus, setfocus] = useState({});
   const [focusmode, setfocusmode] = useState(false);
-
   const [success, setsuccess] = useState();
   const [message, setmessage] = useState("");
 
@@ -37,21 +35,100 @@ const Admin = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
 
+  //MODECHANGER
+
   const quitfocusHandler = (e) => {
     setfocusmode(false);
   };
-  //JS function to manipule date
-  const DatetoStringMinemethod = (date) => {
-    return (
-      (date.getDate() > 9 ? date.getDate() : "0" + date.getDate()) +
-      "." +
-      (date.getMonth() > 8
-        ? date.getMonth() + 1
-        : "0" + (date.getMonth() + 1)) +
-      "." +
-      date.getFullYear()
-    );
+  const developmodehandler = () => {
+    setdevelopmode((p) => !p);
   };
+  //focusmodechanger + setter
+  const focusmodehandler = (e, mode) => {
+    setfocusmode(mode);
+    delete e.validateby;
+    const nexfocus = [];
+    const time =
+      (new Date(e.askedDateend).getTime() -
+        new Date(e.askedDatebeg).getTime()) /
+      3600000;
+
+    Object.keys(e).forEach((key) => {
+      let newkeyname;
+      switch (key) {
+        case "from":
+          newkeyname = "Identifiant du demandeur";
+          break;
+        case "_id":
+          newkeyname = "Identifiant de la demande";
+          break;
+        case "body":
+          newkeyname = "Message";
+          break;
+        case "type":
+          newkeyname = "Type";
+          break;
+        case "askedDatebeg":
+          newkeyname = "Date de début";
+          e[key] = new Date(e[key]).toString();
+          break;
+        case "askedDateend":
+          newkeyname = "Durée";
+          e[key] = time + "H";
+          break;
+        case "askingDate":
+          newkeyname = "Date de la demande";
+          e[key] = new Date(e[key]).toString();
+          break;
+        case "status":
+          newkeyname = "Status";
+          break;
+        case "ownerdenomination":
+          newkeyname = "Demandeur";
+          break;
+        case "feedback":
+          newkeyname = "Retour";
+          break;
+        case "feedbackdate":
+          newkeyname = "Date d'inspection";
+          e[key] = new Date(e[key]).toString();
+          break;
+        case "dateofclose":
+          newkeyname = "Fermeture de dossier";
+          e[key] = new Date(e[key]).toString();
+          break;
+        case "emaildemandeur":
+          newkeyname = "Mail du demandeur";
+          break;
+        default:
+          newkeyname = key;
+          break;
+      }
+      nexfocus.push([newkeyname, e[key]]);
+    });
+
+    e = nexfocus;
+
+    setfocus(e);
+  };
+  const responsehandle = (e) => {
+    setsuccess(e);
+    setconfirmationmode(true);
+  };
+  const modeconfhandler = (e) => {
+    setconfirmationmode((p) => !p);
+  };
+  const developmodepaiementhandler = (e) => {
+    setdevelopmodepeiement((p) => !p);
+  };
+  const changemessagehandler = (e) => {
+    setmessage(e.target.value);
+  };
+  const newdemandHandler = () => {
+    setnewdemandemode((p) => !p);
+  };
+
+  //GET DEMAND WAITINGS
   useEffect(() => {
     const sendreq = async () => {
       try {
@@ -67,6 +144,8 @@ const Admin = () => {
     };
     sendreq();
   }, [auth, sendRequest, reload]);
+
+  //GET DEMAND KEYS
   useEffect(() => {
     const sendreq = async () => {
       try {
@@ -81,6 +160,8 @@ const Admin = () => {
     };
     sendreq();
   }, [auth, sendRequest, reload]);
+
+  //GET DEMAND PAYMENT
   useEffect(() => {
     const sendreq = async () => {
       try {
@@ -97,30 +178,18 @@ const Admin = () => {
     sendreq();
   }, [auth, sendRequest, reload]);
 
-  const developmodehandler = () => {
-    setdevelopmode((p) => !p);
-  };
-
-  const focusmodehandler = (e, mode) => {
-    setfocusmode(mode);
-    setfocus(e);
-  };
-  const responsehandle = (e) => {
-    setsuccess(e);
-    setconfirmationmode(true);
-  };
-  const modeconfhandler = (e) => {
-    setconfirmationmode((p) => !p);
-  };
-  const developmodepaiementhandler = (e) => {
-    setdevelopmodepeiement((p) => !p);
-  };
-
   const hndlesubmit = async (e) => {
-    console.log("dede");
-    if (!success && message !== "" && focusmode == "reservationenattente") {
+    //DENY DEMAND
+    let id;
+    for (let i = 0; i < e.length; i++) {
+      if (e[i][0] === "Identifiant de la demande") {
+        id = e[i][1];
+        break;
+      }
+    }
+    if (!success && message !== "" && focusmode === "reservationenattente") {
       const tosend = {
-        demand: e._id,
+        demand: id,
         result: success,
         message: message,
         date: new Date(),
@@ -145,10 +214,11 @@ const Admin = () => {
           setmessage("");
         }
       } catch (err) {}
-    } else if (success && focusmode == "reservationenattente") {
+    } else if (success && focusmode === "reservationenattente") {
+      //ACCEPT DEMAND
       const tosend = {
-        demand: e._id,
-        message: "ras",
+        demand: id,
+        message: "OK",
         result: success,
         date: new Date(),
       };
@@ -172,9 +242,10 @@ const Admin = () => {
         }
       } catch (err) {}
     } else if (focusmode === "paiment") {
+      //VALIDATE PAYEMENT
       try {
         const tosend = {
-          demand: e._id,
+          demand: id,
         };
         const response = await sendRequest(
           `${process.env.REACT_APP_BACKENDURL}/api/demand/validate`,
@@ -193,11 +264,11 @@ const Admin = () => {
           setmessage("");
         }
       } catch (err) {}
-    } else if (focusmode == "keys") {
+    } else if (focusmode === "keys") {
+      //VALIDATE KEYS
       try {
-        console.log("dd");
         const tosend = {
-          demand: e._id,
+          demand: id,
           result: success,
         };
         const response = await sendRequest(
@@ -219,12 +290,8 @@ const Admin = () => {
       } catch (err) {}
     }
   };
-  const changemessagehandler = (e) => {
-    setmessage(e.target.value);
-  };
-  const newdemandHandler = () => {
-    setnewdemandemode((p) => !p);
-  };
+
+  //VALIDATE PAYMENT WITH HELLO ASSO
   const sendverifypayment = async (e) => {
     try {
       const response = await sendRequest(
@@ -236,11 +303,12 @@ const Admin = () => {
           Authorization: "Bearer " + auth.token,
         }
       );
-      console.log(response);
     } catch (err) {}
   };
+
   return (
     <div className="adminPage">
+      <NewDemand public show={newdemandmode} onCancel={newdemandHandler} />
       <Errormodal
         error={error}
         onClear={clearError}
@@ -251,13 +319,13 @@ const Admin = () => {
         type="Other"
         title={"Warning"}
         text={
-          success && focusmode == "reservationenattente"
+          success && focusmode === "reservationenattente"
             ? "Vous êtes sur le point de valider une demande. Êtes vous sur de pouvoir l'assurer?"
             : focusmode === "paiment"
             ? "Vous êtes sur le point de confirmer le paiement d'un membre. En êtes vous sur ? "
             : focusmode === "keys" && success
             ? "Vous êtes sur le point de confirmer que les clefs ont bien étées données à la personne adéquate. En êtes vous sur ? "
-            : "Vous êtes sur le point de refuser une demande. En êtes vous sur ?"
+            : "Vous êtes sur le point de refuser une demande. En êtes vous sur ?" //case for deny key or reservation
         }
         onCancel={modeconfhandler}
         onClick={() => hndlesubmit(focus)}
@@ -270,7 +338,7 @@ const Admin = () => {
           message === ""
         }
         buttontext={
-          success && focusmode == "reservationenattente"
+          success && focusmode === "reservationenattente"
             ? "Valider la demande"
             : focusmode === "paiment"
             ? "Je confirme son paiement"
@@ -297,60 +365,24 @@ const Admin = () => {
         show={!!focusmode}
         className="focuondemand"
         onCancel={quitfocusHandler}
-        height={"auto"}
         overflow="scroll"
+        height={window.innerHeight * 0.9}
       >
-        <div className="demandId">
-          <h1 style={{ fontSize: "20px" }}>Demand Id</h1>
-          <p>{focus._id}</p>
-        </div>
-        <div className="nomprenom">
-          <h1 style={{ fontSize: "20px" }}>Demandeur</h1>
-          <p>{focus.ownerdenomination}</p>
-        </div>
-        <div className="datedossier">
-          <h1 style={{ fontSize: "20px" }}>Date de dossier</h1>
-          <p>{DatetoStringMinemethod(new Date(focus.askingDate))}</p>
-        </div>
-        <div className="datedébut">
-          <h1 style={{ fontSize: "20px" }}>Date de la réservation</h1>
-          <p>{`Le ${DatetoStringMinemethod(
-            new Date(focus.askedDatebeg)
-          )} à ${new Date(focus.askedDatebeg).getHours()}H`}</p>
-        </div>
-        <div className="Heure">
-          <h1 style={{ fontSize: "20px" }}>Nombre d'heure</h1>
-          <p>
-            {(new Date(focus.askedDateend).getTime() -
-              new Date(focus.askedDatebeg).getTime()) /
-              3600000}
-          </p>
-        </div>
-        <div className="status">
-          <h1 style={{ fontSize: "20px" }}>Status</h1>
-          <p
-            style={{
-              color:
-                focus.status === "Waiting for validation" ? "orange" : "black",
-            }}
-          >
-            {focus.status}
-          </p>
-        </div>
-        <div className="status">
-          <h1 style={{ fontSize: "20px" }}>Type</h1>
-          <p>{focus.type}</p>
-        </div>
-
-        <div className="demandId">
-          <h1 style={{ fontSize: "20px" }}>Mode de paiement</h1>
-          <p>{focus.paymentmethod}</p>
-        </div>
-        <div className="demandId">
-          <h1 style={{ fontSize: "20px" }}>Message</h1>
-          <p>{focus.body}</p>
-        </div>
-
+        {focus.map((foc) => {
+          return (
+            <div
+              key={foc[0]}
+              className={`${
+                foc[0] === "Status"
+                  ? `info Status ${foc[1].replace(/\s/g, "")}`
+                  : `info ${foc[0]}`
+              }`}
+            >
+              <h1>{foc[0]}</h1>
+              <p>{foc[1]}</p>
+            </div>
+          );
+        })}
         <div className="actionstodo">
           {focusmode === "reservationenattente" && (
             <React.Fragment>
@@ -489,12 +521,6 @@ const Admin = () => {
           onClick={developmodehandler}
         />
       </div>
-
-      <div className="Inventaire">
-        <h1>Inventaire</h1>
-        <p>Pas encore disponible</p>
-      </div>
-      <NewDemand public show={newdemandmode} onCancel={newdemandHandler} />
       <div className="synchronisationHelloAsso">
         <div className="synchroAdhesion">
           <Button
@@ -581,18 +607,9 @@ const Admin = () => {
           onClick={developmodepaiementhandler}
         />
       </div>
-      <div
-        className="paiementenattente"
-        style={{ height: developmodepaiment ? "70vh" : "" }}
-      >
+      <div className="clefenattente">
         <h1>Clefs en attente</h1>
-        <div
-          className="buttoncontainer"
-          style={{
-            overflowY: developmodepaiment ? "scroll" : "visible",
-            height: developmodepaiment ? "80%" : "",
-          }}
-        >
+        <div className="buttoncontainer">
           {alldemandkeys.map((demand) => {
             return (
               <React.Fragment key={demand._id}>
@@ -603,6 +620,7 @@ const Admin = () => {
                   borderradius="38px"
                   maxWidth="90vw"
                   onClick={() => focusmodehandler(demand, "keys")}
+                  marginbottom="10px"
                 >
                   <h2>{demand.ownerdenomination}</h2>
                 </Button>
