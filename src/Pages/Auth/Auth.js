@@ -12,8 +12,9 @@ import { AuthContext } from "../../Context/auth-context";
 import { useForm } from "../../Hooks/form-hook";
 import Modal from "../../Components/Shared/Modal";
 import Button from "../../Components/Shared/Button";
-
+import ErrorModal from "../../Components/Shared/ErrorModal";
 import svgquit from "../../File/svg/croix.svg";
+import Waitings from "../../Components/Shared/Waitings";
 
 const Auth = (props) => {
   const [isLoginMode, setIsLoginMode] = useState(props.change ? false : true);
@@ -248,6 +249,13 @@ const Auth = (props) => {
   };
   return (
     <React.Fragment>
+      <ErrorModal
+        error={error}
+        onClear={clearError}
+        onClearAction={clearError}
+        action="Go Home"
+      />
+
       <Modal
         top={style}
         //transform={!isLoginMode ? "translateY(-140px)" : ""}
@@ -459,6 +467,7 @@ const Auth = (props) => {
           </div>
         )}
       </Modal>
+      {isLoading && <Waitings />}
     </React.Fragment>
   );
 };

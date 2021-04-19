@@ -294,7 +294,7 @@ const Admin = () => {
   //VALIDATE PAYMENT WITH HELLO ASSO
   const sendverifypayment = async (e) => {
     try {
-      const response = await sendRequest(
+      await sendRequest(
         `${process.env.REACT_APP_BACKENDURL}/api/helloasso/`,
         "GET",
         null,
