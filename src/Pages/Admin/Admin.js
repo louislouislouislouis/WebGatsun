@@ -68,6 +68,9 @@ const Admin = () => {
         case "type":
           newkeyname = "Type";
           break;
+        case "paymentmethod":
+          newkeyname = "Mode de Paiement";
+          break;
         case "askedDatebeg":
           newkeyname = "Date de début";
           e[key] = new Date(e[key]).toString();
