@@ -154,7 +154,7 @@ const NewDemand = (props) => {
             (occup.dateend.getMinutes() < 10
               ? "0" + occup.dateend.getMinutes()
               : occup.dateend.getMinutes()) +
-            (index !== reservationonsamedate.length - 1 ? " and from " : "");
+            (index === reservationonsamedate.length - 1 ? "" : " and from");
         } else {
           if (occup.datebegin.getDate() === value.getDate()) {
             senderfeedback +=
@@ -168,11 +168,7 @@ const NewDemand = (props) => {
               " to 00:00" +
               (index !== reservationonsamedate.length - 1 ? " and from " : "");
           } else if (occup.dateend.getHours() === 0) {
-            if (reservationonsamedate.length !== 1) {
-              senderfeedback = "That day stud is booked from ";
-            } else {
-              senderfeedback = "";
-            }
+            senderfeedback = senderfeedback.slice(0, -9);
           } else if (occup.dateend.getDate() === value.getDate()) {
             senderfeedback +=
               "00:00 to " +
