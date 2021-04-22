@@ -178,7 +178,7 @@ const UserMessages = () => {
         )}
         {otheruser && (
           <h1
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center", margin: "0 0 0 0" }}
           >{`${otheruser.firstname} ${otheruser.name}`}</h1>
         )}
         <div className="user_conv">
@@ -194,7 +194,7 @@ const UserMessages = () => {
           {isLoading && <Waitings little pos="absolute" />}
           <div
             className="message"
-            style={{ height: 0.6 * window.innerHeight }}
+            style={{ height: 0.47 * window.innerHeight }}
             ref={msgRef}
           >
             {myconv &&
