@@ -18,6 +18,7 @@ const ModamOverlay = (props) => {
           transform: props.transform,
           position: props.position,
           color: props.color,
+          maxHeight: props.maxheight,
         }}
       >
         <img

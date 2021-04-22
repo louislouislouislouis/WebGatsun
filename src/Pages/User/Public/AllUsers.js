@@ -92,7 +92,14 @@ const Users = () => {
       ></ErrorModal>
 
       <React.Fragment>
-        <Modal show={showUserProp} onCancel={hideuserpropsHandler} top={"12vh"}>
+        <Modal
+          show={showUserProp}
+          onCancel={hideuserpropsHandler}
+          top={"10px"}
+          height={"95vh"}
+          overflow="scroll"
+          maxheight="680px"
+        >
           {
             <React.Fragment>
               <Avatar

@@ -112,14 +112,11 @@ const Conv = (props) => {
                         alt=""
                         width={"75px"}
                         widthpopa={"90px"}
-                        position="absolute"
-                        left="5px"
                         border="0px"
                       />
                       <h1
                         style={{
-                          position: "absolute",
-                          left: "100px",
+                          marginLeft: "10px",
                           textShadow: "0px 3px 6px rgba(0,0,0,0.16)",
                         }}
                       >
