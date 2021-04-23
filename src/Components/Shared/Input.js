@@ -87,13 +87,16 @@ const Input = (props) => {
         !inputState.isValid && inputState.isTouch && "form-control--invalid"
       } ${props.explication && "form-control--explication"}`}
     >
-      <label htmlFor={props.id}>{props.label}</label>
+      <div className={`${props.explication ? "explicationh1" : ""}`}>
+        <label htmlFor={props.id}>{props.label}</label>
+        {props.explication && (
+          <div className="interrogation" onClick={props.onClickexplication}>
+            <div className="roundedinter">?</div>
+          </div>
+        )}
+      </div>
       {element}
-      {props.explication && (
-        <div className="interrogation" onClick={props.onClickexplication}>
-          <div className="roundedinter">?</div>
-        </div>
-      )}
+
       {!inputState.isValid && inputState.isTouch && props.errorText && (
         <p>{props.errorText}</p>
       )}

@@ -164,9 +164,9 @@ const Auth = (props) => {
 
   useEffect(() => {
     const top2 =
-      (window.innerHeight - 880) / 2 > 0 ? (window.innerHeight - 880) / 2 : 0;
+      (window.innerHeight - 880) / 2 > 0 ? (window.innerHeight - 880) / 2 : 10;
     const top1 =
-      (window.innerHeight - 529) / 2 > 0 ? (window.innerHeight - 529) / 2 : 0;
+      (window.innerHeight - 529) / 2 > 0 ? (window.innerHeight - 529) / 2 : 10;
     setstyle(() => (isLoginMode ? `${top1}px` : `${top2}px`));
   }, [isLoginMode]);
 
@@ -261,6 +261,8 @@ const Auth = (props) => {
         //transform={!isLoginMode ? "translateY(-140px)" : ""}
         show={props.show}
         onCancel={cancelHandler}
+        overflow="scroll"
+        height="95vh"
       >
         <form
           onSubmit={!props.change ? userUpdateSubmitHandler : changehandlersend}

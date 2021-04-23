@@ -100,10 +100,7 @@
   line-height: 16px;
 }
 .interrogation {
-  position: absolute;
-  top: 50%;
   opacity: 0.4;
-  right: -30px;
 }
 
 .input {
@@ -143,4 +140,8 @@ form {
   flex-direction: column;
   width: 100%;
   margin-bottom: 10px;
+}
+.explicationh1 {
+  display: flex;
+  justify-content: space-between;
 }
