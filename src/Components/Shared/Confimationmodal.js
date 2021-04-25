@@ -18,35 +18,47 @@ const Confimationmodal = (props) => {
         timeout={200}
         classNames="modal"
       >
-        <div className="confimationmodal">
+        <div
+          className="confimationmodal"
+          style={{
+            top:
+              props.type === "Success"
+                ? "calc(50vh - 150px)"
+                : props.type === "Other"
+                ? "10px"
+                : "calc(50vh - 225px)",
+          }}
+        >
           <img
             className="imgquitmodal"
             src={svgquit}
             alt="quit"
             onClick={props.onCancel}
           />
-          {props.type === "Success" && <h1>Succès</h1>}
-          {props.type === "Avert" && <h1>Attention</h1>}
-          {props.type === "Other" && <h1>{props.title}</h1>}
-          <p>{props.text}</p>
-          {props.isLoading && <Waitings width="200px" />}
-          {props.children}
-          <Button
-            height="56px"
-            text={
-              props.type === "Success"
-                ? "Ok!"
-                : props.type === "Avert"
-                ? "Je confirme la demande"
-                : props.buttontext
-            }
-            fontsize="20px"
-            borderradius="22px"
-            width="100%"
-            orange
-            disabled={props.disabled}
-            onClick={props.onClick}
-          />
+          <div className="coontetn">
+            {props.type === "Success" && <h1>Succès</h1>}
+            {props.type === "Avert" && <h1>Attention</h1>}
+            {props.type === "Other" && <h1>{props.title}</h1>}
+            <p>{props.text}</p>
+            {props.isLoading && <Waitings width="200px" />}
+            {props.children}
+            <Button
+              height="56px"
+              text={
+                props.type === "Success"
+                  ? "Ok!"
+                  : props.type === "Avert"
+                  ? "Je confirme la demande"
+                  : props.buttontext
+              }
+              fontsize="20px"
+              borderradius="22px"
+              width="100%"
+              orange
+              disabled={props.disabled}
+              onClick={props.onClick}
+            />
+          </div>
         </div>
       </CSSTransition>
     </React.Fragment>

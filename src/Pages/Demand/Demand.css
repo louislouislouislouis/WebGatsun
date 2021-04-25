@@ -109,10 +109,12 @@
 .Waitingforvalidation p {
   color: orange;
 }
-.Refusé p {
+.Refusé p,
+.Public-Unconfirmed p {
   color: red;
 }
 .Confirmed-CBpayed p,
+.Public-Confirmed p,
 .Confirmed-Cash p {
   color: green;
 }

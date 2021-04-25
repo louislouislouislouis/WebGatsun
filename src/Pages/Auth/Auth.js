@@ -149,7 +149,12 @@ const Auth = (props) => {
         );
 
         const responseData = await response.json();
-        auth.login(responseData.userId, responseData.token);
+        auth.login(
+          responseData.userId,
+          responseData.token,
+          responseData.UserImg,
+          responseData.role
+        );
       } catch (err) {
         console.log(err);
       }
@@ -164,9 +169,11 @@ const Auth = (props) => {
 
   useEffect(() => {
     const top2 =
-      (window.innerHeight - 880) / 2 > 0 ? (window.innerHeight - 880) / 2 : 10;
+      (window.innerHeight - 1050) / 2 > 0
+        ? (window.innerHeight - 1050) / 2
+        : 10;
     const top1 =
-      (window.innerHeight - 529) / 2 > 0 ? (window.innerHeight - 529) / 2 : 10;
+      (window.innerHeight - 450) / 2 > 0 ? (window.innerHeight - 450) / 2 : 10;
     setstyle(() => (isLoginMode ? `${top1}px` : `${top2}px`));
   }, [isLoginMode]);
 
@@ -261,8 +268,9 @@ const Auth = (props) => {
         //transform={!isLoginMode ? "translateY(-140px)" : ""}
         show={props.show}
         onCancel={cancelHandler}
-        overflow="scroll"
         height="95vh"
+        overflow="scroll"
+        maxheight={isLoginMode ? "441px" : "1000px"}
       >
         <form
           onSubmit={!props.change ? userUpdateSubmitHandler : changehandlersend}
@@ -438,7 +446,7 @@ const Auth = (props) => {
 
           <Button
             type="submit"
-            //disabled={!authState.isValid}
+            disabled={!authState.isValid}
             height="56px"
             text={
               !isLoginMode
